@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${player.id == null ? 'Créer un joueur' : 'Modifier le joueur'}">Formulaire de joueur</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="/players">Joueurs</a></li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${player.id == null ? 'Créer' : 'Modifier'}">Action</li>
+            </ol>
+        </nav>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h2 th:text="${player.id == null ? 'Créer un nouveau joueur' : 'Modifier le joueur'}">Formulaire de joueur</h2>
+            </div>
+            <div class="card-body">
+                <form th:action="@{${player.id == null ? '/players' : '/players/' + player.id}}" 
+                      th:object="${player}" method="post" class="needs-validation" novalidate>
+                    
+                    <input type="hidden" th:if="*{id != null}" th:field="*{id}" />
+                    
+                    <!-- Informations de base -->
+                    <h4 class="mb-3">Informations d'utilisateur</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="username" class="form-label">Nom d'utilisateur*</label>
+                            <input type="text" class="form-control" id="username" th:field="*{username}" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                                Veuillez entrer un nom d'utilisateur valide.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email*</label>
+                            <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                                Veuillez entrer un email valide.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="password" class="form-label">Mot de passe*</label>
+                            <input type="password" class="form-control" id="password" th:field="*{password}" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                                Le mot de passe doit contenir au moins 8 caractères.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="nickname" class="form-label">Surnom (Pseudo)</label>
+                            <input type="text" class="form-control" id="nickname" th:field="*{nickname}">
+                        </div>
+                    </div>
+                    
+                    <!-- Informations personnelles -->
+                    <h4 class="mb-3 mt-4">Informations personnelles</h4>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="firstName" class="form-label">Prénom</label>
+                            <input type="text" class="form-control" id="firstName" th:field="*{firstName}">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="lastName" class="form-label">Nom</label>
+                            <input type="text" class="form-control" id="lastName" th:field="*{lastName}">
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="dateOfBirth" class="form-label">Date de naissance</label>
+                            <input type="text" class="form-control date-picker" id="dateOfBirth" th:field="*{dateOfBirth}" placeholder="JJ/MM/AAAA">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="profilePictureUrl" class="form-label">URL de la photo de profil</label>
+                            <input type="url" class="form-control" id="profilePictureUrl" th:field="*{profilePictureUrl}">
+                        </div>
+                    </div>
+                    
+                    <!-- Options -->
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" id="isActive" th:field="*{active}">
+                        <label class="form-check-label" for="isActive">Compte actif</label>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a th:href="@{/players}" class="btn btn-secondary">Annuler</a>
+                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Initialisation du datepicker et validation des formulaires
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser Flatpickr pour le sélecteur de date
+            flatpickr(".date-picker", {
+                dateFormat: "d/m/Y",
+                allowInput: true,
+                altInput: true,
+                altFormat: "d/m/Y",
+                locale: "fr"
+            });
+            
+            // Validation des formulaires Bootstrap
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        });
+    </script>
+</body>
+</html>

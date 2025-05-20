@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${tournament.id == null ? 'Créer un tournoi' : 'Modifier le tournoi'}">Formulaire de tournoi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h2 th:text="${tournament.id == null ? 'Créer un nouveau tournoi' : 'Modifier le tournoi'}">Formulaire de tournoi</h2>
+            </div>
+            <div class="card-body">
+                <form th:action="${tournament.id == null ? @{/tournaments} : @{/tournaments/__${tournament.id}__}}" 
+                      th:object="${tournament}" method="post" class="needs-validation" novalidate>
+                    
+                    <input type="hidden" th:if="*{id != null}" th:field="*{id}" />
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nom du tournoi</label>
+                        <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                            Veuillez entrer un nom valide.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="game" class="form-label">Jeu</label>
+                        <select class="form-select" id="game" th:field="*{game}" required>
+                            <option value="">-- Sélectionnez un jeu --</option>
+                            <!-- Cette partie nécessite d'être adaptée avec les jeux disponibles -->
+                        </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('game')}" th:errors="*{game}">
+                            Veuillez sélectionner un jeu.
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="startDate" class="form-label">Date de début</label>
+                            <input type="datetime-local" class="form-control date-picker" id="startDate" th:field="*{startDate}" required>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">
+                                Veuillez sélectionner une date de début.
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="endDate" class="form-label">Date de fin (optionnelle)</label>
+                            <input type="datetime-local" class="form-control date-picker" id="endDate" th:field="*{endDate}">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="maxParticipants" class="form-label">Nombre maximum de participants</label>
+                        <input type="number" class="form-control" id="maxParticipants" th:field="*{maxParticipants}" min="2">
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('maxParticipants')}" th:errors="*{maxParticipants}">
+                            Le nombre minimum est 2.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="status" class="form-label">Statut</label>
+                        <select class="form-select" id="status" th:field="*{status}" required>
+                            <option value="PENDING">En attente</option>
+                            <option value="REGISTRATION_OPEN">Inscriptions ouvertes</option>
+                            <option value="REGISTRATION_CLOSED">Inscriptions fermées</option>
+                            <option value="IN_PROGRESS">En cours</option>
+                            <option value="COMPLETED">Terminé</option>
+                            <option value="CANCELLED">Annulé</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Section pour sélectionner les participants parmi les utilisateurs -->
+                    <div class="mb-3">
+                        <label class="form-label">Participants</label>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div th:each="user : ${users}" class="col-md-4 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" 
+                                                   th:value="${user.id}" 
+                                                   th:id="${'user-' + user.id}"
+                                                   name="participantIds">
+                                            <label class="form-check-label" th:for="${'user-' + user.id}" 
+                                                   th:text="${user.username + ' (' + user.fullName + ')'}">
+                                                Username (Full Name)
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a th:href="@{/tournaments}" class="btn btn-secondary">Annuler</a>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Initialiser Flatpickr pour les sélecteurs de date
+        document.addEventListener('DOMContentLoaded', function() {
+            flatpickr(".date-picker", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                time_24hr: true
+            });
+            
+            // Validation des formulaires Bootstrap
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        });
+    </script>
+</body>
+</html>
