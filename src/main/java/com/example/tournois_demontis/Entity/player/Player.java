@@ -19,7 +19,7 @@ public class Player extends User {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
     
-    @Column(name = "profile_picture")
+    @Column(name = "profile_picture", columnDefinition = "TEXT")
     private String profilePictureUrl;
     
     @OneToOne(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
