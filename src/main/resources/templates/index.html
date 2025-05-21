@@ -54,6 +54,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="/players/new">Ajouter un joueur</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/teams">Équipes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/teams/new">Créer une équipe</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -66,8 +72,8 @@
         
         <div class="row g-4">
             <!-- Carte des tournois -->
-            <div class="col-md-4">
-                <div class="card feature-card h-100">
+            <div class="col-md-3">
+                <div class="card feature-card h-100 border-primary shadow">
                     <div class="card-body text-center">
                         <div class="mb-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-trophy text-primary" viewBox="0 0 16 16">
@@ -80,10 +86,9 @@
                     </div>
                 </div>
             </div>
-            
             <!-- Carte des joueurs -->
-            <div class="col-md-4">
-                <div class="card feature-card h-100">
+            <div class="col-md-3">
+                <div class="card feature-card h-100 border-success shadow">
                     <div class="card-body text-center">
                         <div class="mb-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-people text-success" viewBox="0 0 16 16">
@@ -96,10 +101,24 @@
                     </div>
                 </div>
             </div>
-            
+            <!-- Carte des équipes -->
+            <div class="col-md-3">
+                <div class="card feature-card h-100 border-warning shadow">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-people-fill text-warning" viewBox="0 0 16 16">
+                                <path d="M13 7a3 3 0 1 0-6 0 3 3 0 0 0 6 0zm-7 8a4 4 0 1 1 8 0H6zm-4-1c0-2 4-3 8-3s8 1 8 3v1H2v-1z"/>
+                            </svg>
+                        </div>
+                        <h3>Gestion des Équipes</h3>
+                        <p>Créez, éditez et gérez les équipes. Ajoutez ou retirez des joueurs pour chaque équipe.</p>
+                        <a href="/teams" class="btn btn-outline-warning">Voir les équipes</a>
+                    </div>
+                </div>
+            </div>
             <!-- Carte des jeux -->
-            <div class="col-md-4">
-                <div class="card feature-card h-100">
+            <div class="col-md-3">
+                <div class="card feature-card h-100 border-danger shadow">
                     <div class="card-body text-center">
                         <div class="mb-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-plus-circle text-danger" viewBox="0 0 16 16">

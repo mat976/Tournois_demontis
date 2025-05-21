@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Détails de l'équipe</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .team-detail {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .team-logo {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .player-badge {
+            margin-right: 8px;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 20px;
+        }
+        .player-badge img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .player-badge span {
+            vertical-align: middle;
+        }
+        .team-info {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .team-info h4 {
+            margin-bottom: 15px;
+            color: #0d6efd;
+        }
+        .team-info p {
+            line-height: 1.6;
+            color: #6c757d;
+        }
+        .team-members {
+            margin-top: 20px;
+        }
+        .team-members h4 {
+            margin-bottom: 15px;
+            color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card team-detail">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="mb-0">Détails de l'équipe</h2>
+                    <div>
+                        <a th:href="@{'/teams/' + ${team.id} + '/edit'}" class="btn btn-warning btn-sm">
+                            <i class="fas fa-pencil"></i> Modifier
+                        </a>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTeam(${team.id})">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <img th:src="${team.logoUrl}" th:alt="${team.name}" class="team-logo">
+                        <h3 th:text="${team.name}" class="mb-2">Nom de l'équipe</h3>
+                        <p class="text-muted small" th:text="${#temporals.format(team.creationDate, 'dd/MM/yyyy HH:mm')}">Date de création</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="team-info">
+                                <h4>Informations</h4>
+                                <p th:text="${team.description}" class="mb-0"></p>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <div class="team-info">
+                                <h4>Capitaine</h4>
+                                <div class="d-flex align-items-center">
+                                    <img th:src="${team.captain.profilePictureUrl}" th:alt="${team.captain.nickname}" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px;">
+                                    <span th:text="${team.captain.nickname}" class="h5 mb-0"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="team-members">
+                        <h4>Membres de l'équipe</h4>
+                        <div class="d-flex flex-wrap justify-content-center">
+                            <span th:each="player : ${team.players}" class="badge bg-primary player-badge">
+                                <img th:src="${player.profilePictureUrl}" th:alt="${player.nickname}" class="rounded-circle">
+                                <span th:text="${player.nickname}" class="text-white"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteTeam(teamId) {
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette équipe ?')) {
+            window.location.href = '/teams/' + teamId + '/delete';
+        }
+    }
+</script>
+</body>
+</html>
