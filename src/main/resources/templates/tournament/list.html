@@ -1,50 +1,73 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liste des Tournois</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h2>Liste des Tournois</h2>
-                <a th:href="@{/tournaments/new}" class="btn btn-light">Créer un tournoi</a>
+<head th:replace="~{fragments/head :: head('Liste des Tournois E-Sport')}"></head>
+<body class="cyber-bg tw-min-h-screen tw-text-white">
+    <!-- En-tête avec titre -->
+    <div class="tw-relative tw-overflow-hidden tw-py-12 tw-mb-10 tw-bg-cyber-darker tw-grid-bg">
+        <div class="cyber-tear tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-h-10"></div>
+        <div class="container tw-relative tw-z-10 tw-text-center">
+            <h1 class="tw-font-orbitron tw-text-4xl tw-font-bold tw-mb-4">
+                <span class="tw-text-cyber-blue">TOURNOIS</span> <span class="tw-text-cyber-pink">E-SPORT</span>
+            </h1>
+            <p class="tw-font-russo tw-text-xl tw-text-cyber-blue tw-mb-8 tw-opacity-80">Gérez et participez à des compétitions de haut niveau</p>
+        </div>
+        <div class="cyber-tear tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-10"></div>
+    </div>
+
+    <div class="container tw-mb-16">
+        <!-- Section liste des tournois -->
+        <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-mb-10">
+            <div class="tw-bg-gradient-to-r tw-from-cyber-purple tw-to-cyber-blue tw-p-4 tw-flex tw-justify-between tw-items-center">
+                <h2 class="tw-font-russo tw-text-2xl tw-text-white">LISTE DES TOURNOIS</h2>
+                <a th:href="@{/tournaments/new}" class="neon-btn tw-bg-cyber-dark tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker tw-font-orbitron">
+                    <i class="fas fa-plus tw-mr-2"></i> CRÉER UN TOURNOI
+                </a>
             </div>
-            <div class="card-body">
-                <div th:if="${tournaments.empty}" class="alert alert-info">
+            <div class="tw-p-6">
+                <div th:if="${tournaments.empty}" class="tw-bg-cyber-darker tw-text-cyber-blue tw-p-4 tw-rounded-md tw-text-center tw-border tw-border-cyber-blue">
                     Aucun tournoi disponible. Créez-en un maintenant !
                 </div>
                 
-                <div th:unless="${tournaments.empty}" class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Nom</th>
-                                <th>Jeu</th>
-                                <th>Date de début</th>
-                                <th>Status</th>
-                                <th>Participants</th>
-                                <th>Actions</th>
+                <div th:unless="${tournaments.empty}" class="tw-overflow-x-auto">
+                    <table class="tw-w-full tw-border-collapse">
+                        <thead>
+                            <tr class="tw-bg-cyber-darker tw-border-b tw-border-cyber-blue">
+                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-blue">NOM</th>
+                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-blue">JEU</th>
+                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-blue">DATE DE DÉBUT</th>
+                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-blue">STATUT</th>
+                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-blue">PARTICIPANTS</th>
+                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-blue">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="tournament : ${tournaments}">
-                                <td th:text="${tournament.name}">Nom du tournoi</td>
-                                <td th:text="${tournament.game != null ? tournament.game.name : 'Non défini'}">Nom du jeu</td>
-                                <td th:text="${#temporals.format(tournament.startDate, 'dd/MM/yyyy HH:mm')}">Date</td>
-                                <td th:text="${tournament.status}">Status</td>
-                                <td th:text="${tournament.participants.size()}">Nombre de participants</td>
-                                <td>
-                                    <div class="btn-group btn-group-sm">
-                                        <a th:href="@{/tournaments/{id}(id=${tournament.id})}" class="btn btn-info">Détails</a>
-                                        <a th:href="@{/tournaments/{id}/edit(id=${tournament.id})}" class="btn btn-warning">Modifier</a>
+                            <tr th:each="tournament : ${tournaments}" class="tw-border-b tw-border-gray-700 tw-hover:tw-bg-cyber-darker tw-transition-colors">
+                                <td class="tw-p-3 tw-text-gray-200" th:text="${tournament.name}">Nom du tournoi</td>
+                                <td class="tw-p-3 tw-text-gray-200" th:text="${tournament.game != null ? tournament.game.name : 'Non défini'}">Nom du jeu</td>
+                                <td class="tw-p-3 tw-text-gray-200" th:text="${#temporals.format(tournament.startDate, 'dd/MM/yyyy HH:mm')}">Date</td>
+                                <td class="tw-p-3">
+                                    <span th:switch="${tournament.status}" class="tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold">
+                                        <span th:case="'PENDING'" class="tw-bg-gray-600 tw-text-white">EN ATTENTE</span>
+                                        <span th:case="'REGISTRATION_OPEN'" class="tw-bg-cyber-green tw-text-black">INSCRIPTIONS OUVERTES</span>
+                                        <span th:case="'REGISTRATION_CLOSED'" class="tw-bg-cyber-yellow tw-text-black">INSCRIPTIONS FERMÉES</span>
+                                        <span th:case="'IN_PROGRESS'" class="tw-bg-cyber-blue tw-text-white">EN COURS</span>
+                                        <span th:case="'COMPLETED'" class="tw-bg-cyber-purple tw-text-white">TERMINÉ</span>
+                                        <span th:case="'CANCELLED'" class="tw-bg-cyber-red tw-text-white">ANNULÉ</span>
+                                    </span>
+                                </td>
+                                <td class="tw-p-3 tw-text-gray-200" th:text="${tournament.participants.size()}">Nombre de participants</td>
+                                <td class="tw-p-3">
+                                    <div class="tw-flex tw-space-x-2">
+                                        <a th:href="@{/tournaments/{id}(id=${tournament.id})}" class="tw-bg-cyber-blue tw-text-white tw-px-3 tw-py-1 tw-rounded tw-text-sm tw-transition tw-duration-300 tw-hover:tw-bg-blue-600">
+                                            <i class="fas fa-eye tw-mr-1"></i> Détails
+                                        </a>
+                                        <a th:href="@{/tournaments/{id}/edit(id=${tournament.id})}" class="tw-bg-cyber-yellow tw-text-black tw-px-3 tw-py-1 tw-rounded tw-text-sm tw-transition tw-duration-300 tw-hover:tw-bg-yellow-400">
+                                            <i class="fas fa-edit tw-mr-1"></i> Modifier
+                                        </a>
                                         <a th:href="@{/tournaments/{id}/delete(id=${tournament.id})}" 
-                                           class="btn btn-danger"
+                                           class="tw-bg-cyber-red tw-text-white tw-px-3 tw-py-1 tw-rounded tw-text-sm tw-transition tw-duration-300 tw-hover:tw-bg-red-600"
                                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce tournoi ?')">
-                                            Supprimer
+                                            <i class="fas fa-trash tw-mr-1"></i> Supprimer
                                         </a>
                                     </div>
                                 </td>
@@ -56,35 +79,35 @@
         </div>
         
         <!-- Section Liste des utilisateurs -->
-        <div class="card shadow-sm mt-4">
-            <div class="card-header bg-secondary text-white">
-                <h3>Liste des Utilisateurs</h3>
+        <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden">
+            <div class="tw-bg-gradient-to-r tw-from-cyber-green tw-to-cyber-blue tw-p-4">
+                <h3 class="tw-font-russo tw-text-xl tw-text-white">LISTE DES JOUEURS</h3>
             </div>
-            <div class="card-body">
-                <div th:if="${users != null and users.empty}" class="alert alert-info">
-                    Aucun utilisateur disponible.
+            <div class="tw-p-6">
+                <div th:if="${users != null and users.empty}" class="tw-bg-cyber-darker tw-text-cyber-blue tw-p-4 tw-rounded-md tw-text-center tw-border tw-border-cyber-blue">
+                    Aucun joueur disponible.
                 </div>
                 
-                <div th:if="${users != null and !users.empty}" class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Nom d'utilisateur</th>
-                                <th>Nom complet</th>
-                                <th>Email</th>
-                                <th>Date de création</th>
-                                <th>Status</th>
+                <div th:if="${users != null and !users.empty}" class="tw-overflow-x-auto">
+                    <table class="tw-w-full tw-border-collapse">
+                        <thead>
+                            <tr class="tw-bg-cyber-darker tw-border-b tw-border-cyber-green">
+                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">NOM D'UTILISATEUR</th>
+                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">NOM COMPLET</th>
+                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">EMAIL</th>
+                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">DATE DE CRÉATION</th>
+                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">STATUT</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="user : ${users}">
-                                <td th:text="${user.username}">Nom d'utilisateur</td>
-                                <td th:text="${user.fullName}">Nom complet</td>
-                                <td th:text="${user.email}">Email</td>
-                                <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy')}">Date de création</td>
-                                <td>
-                                    <span th:if="${user.active}" class="badge bg-success">Actif</span>
-                                    <span th:unless="${user.active}" class="badge bg-danger">Inactif</span>
+                            <tr th:each="user : ${users}" class="tw-border-b tw-border-gray-700 tw-hover:tw-bg-cyber-darker tw-transition-colors">
+                                <td class="tw-p-3 tw-text-gray-200" th:text="${user.username}">Nom d'utilisateur</td>
+                                <td class="tw-p-3 tw-text-gray-200" th:text="${user.fullName}">Nom complet</td>
+                                <td class="tw-p-3 tw-text-gray-200" th:text="${user.email}">Email</td>
+                                <td class="tw-p-3 tw-text-gray-200" th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy')}">Date de création</td>
+                                <td class="tw-p-3">
+                                    <span th:if="${user.active}" class="tw-bg-cyber-green tw-text-black tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold">ACTIF</span>
+                                    <span th:unless="${user.active}" class="tw-bg-cyber-red tw-text-white tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold">INACTIF</span>
                                 </td>
                             </tr>
                         </tbody>
@@ -94,6 +117,7 @@
         </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Pied de page avec style gaming -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>
