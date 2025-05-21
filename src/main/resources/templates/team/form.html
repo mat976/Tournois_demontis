@@ -36,12 +36,17 @@
                             <textarea th:field="*{description}" class="form-control" id="description" rows="3"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="captain" class="form-label">Capitaine de l'équipe <span class="text-danger">*</span></label>
-                            <select th:field="*{captain}" class="form-control" id="captain" required>
-                                <option value="" disabled selected>Sélectionnez le capitaine</option>
-                                <option th:each="player : ${allPlayers}" th:value="${player.id}" th:text="${player.nickname}"></option>
+                            <label for="captainId" class="form-label">Capitaine de l'équipe <span class="text-danger">*</span></label>
+                            <select name="captainId" class="form-control" id="captainId" required>
+                                <option value="">Sélectionnez le capitaine</option>
+                                <option th:each="player : ${allPlayers}" 
+                                        th:value="${player.id}" 
+                                        th:text="${player.nickname}"
+                                        th:selected="${team.captain != null && team.captain.id == player.id}">
+                                </option>
                             </select>
-                            <div th:if="${#fields.hasErrors('captain')}" th:errors="*{captain}" class="text-danger"></div>
+                            <div th:if="${#fields.hasErrors('captain')}" class="text-danger">Veuillez sélectionner un capitaine</div>
+                            <div th:if="${captainError != null}" class="text-danger" th:text="${captainError}"></div>
                         </div>
                         <div class="mb-3">
                             <label for="logo" class="form-label">Lien de l'image</label>
@@ -57,10 +62,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="players" class="form-label">Joueurs de l'équipe</label>
-                            <select multiple th:field="*{players}" class="form-control" id="players" size="8">
-                                <option th:each="player : ${allPlayers}" th:value="${player.id}" th:text="${player.nickname}"></option>
+                            <select multiple name="players" class="form-control" id="players" size="8">
+                                <option th:each="player : ${allPlayers}" 
+                                        th:value="${player.id}" 
+                                        th:text="${player.nickname}">
+                                </option>
                             </select>
-                            <small class="form-text text-muted">Sélectionnez les joueurs qui composeront l'équipe</small>
+                            <small class="form-text text-muted">Maintenez la touche Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs joueurs</small>
                         </div>
                         <div class="mt-4">
                             <button type="submit" class="btn btn-primary">Valider</button>

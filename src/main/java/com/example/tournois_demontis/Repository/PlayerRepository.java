@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Long> {
-    // Méthodes personnalisées peuvent être ajoutées ici si nécessaire
+    // Compte le nombre de joueurs dont les IDs sont dans la liste fournie
+    long countByIdIn(Iterable<Long> ids);
 }

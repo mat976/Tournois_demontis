@@ -39,7 +39,9 @@ public class Team {
     )
     private Set<Player> players = new HashSet<>();
 
-    public Team() {}
+    public Team() {
+        this.creationDate = LocalDateTime.now();
+    }
 
     public Team(String name, String description) {
         this.name = name;

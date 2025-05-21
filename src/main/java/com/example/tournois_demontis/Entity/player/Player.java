@@ -3,6 +3,7 @@ package com.example.tournois_demontis.Entity.player;
 import com.example.tournois_demontis.Entity.game.Game;
 import com.example.tournois_demontis.Entity.match.Match;
 import com.example.tournois_demontis.Entity.score.Score;
+import com.example.tournois_demontis.Entity.team.Team;
 import com.example.tournois_demontis.Entity.tournament.Tournament;
 import jakarta.persistence.*;
 import java.time.LocalDate;
@@ -33,6 +34,9 @@ public class Player extends User {
     
     @ManyToMany(mappedBy = "players")
     private Set<Match> matches = new HashSet<>();
+    
+    @ManyToMany(mappedBy = "players")
+    private Set<Team> teams = new HashSet<>();
     
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Score> scores = new HashSet<>();
@@ -115,6 +119,14 @@ public class Player extends User {
         this.matches = matches;
     }
     
+    public Set<Team> getTeams() {
+        return teams;
+    }
+    
+    public void setTeams(Set<Team> teams) {
+        this.teams = teams;
+    }
+    
     public Set<Score> getScores() {
         return scores;
     }
@@ -164,6 +176,17 @@ public class Player extends User {
         score.setPlayer(null);
     }
     
+    // Méthodes utilitaires pour la relation avec Team
+    public void addTeam(Team team) {
+        this.teams.add(team);
+        team.getPlayers().add(this);
+    }
+    
+    public void removeTeam(Team team) {
+        this.teams.remove(team);
+        team.getPlayers().remove(this);
+    }
+    
     // Initialize player stats if not already present
     public void initializeStats() {
         if (this.stats == null) {
@@ -172,14 +195,26 @@ public class Player extends User {
     }
     
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Player player = (Player) o;
+        return getId() != null && getId().equals(player.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+    
+    @Override
     public String toString() {
         return "Player{" +
                 "id=" + getId() +
                 ", username='" + getUsername() + '\'' +
+                ", email='" + getEmail() + '\'' +
                 ", nickname='" + nickname + '\'' +
-                ", games=" + games.size() +
-                ", tournaments=" + tournaments.size() +
-                ", matches=" + matches.size() +
                 '}';
     }
 }

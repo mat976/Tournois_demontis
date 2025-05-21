@@ -1,6 +1,7 @@
 package com.example.tournois_demontis.Service;
 
 import com.example.tournois_demontis.Entity.team.Team;
+import java.time.LocalDateTime;
 import com.example.tournois_demontis.Entity.player.Player;
 import com.example.tournois_demontis.Repository.TeamRepository;
 import com.example.tournois_demontis.Repository.PlayerRepository;
@@ -28,9 +29,40 @@ public class TeamService {
     }
 
     public Team save(Team team, Set<Long> playerIds) {
-        Set<Player> players = new HashSet<>(playerRepository.findAllById(playerIds));
+        // Récupérer les joueurs depuis la base de données
+        Set<Player> players = new HashSet<>();
+        if (playerIds != null && !playerIds.isEmpty()) {
+            players = new HashSet<>(playerRepository.findAllById(playerIds));
+            
+            // Si un capitaine est défini mais n'est pas dans la liste des joueurs, l'ajouter
+            if (team.getCaptain() != null && players.stream().noneMatch(p -> p.getId().equals(team.getCaptain().getId()))) {
+                Optional<Player> captain = playerRepository.findById(team.getCaptain().getId());
+                captain.ifPresent(players::add);
+            }
+        } else if (team.getCaptain() != null) {
+            // Si pas de joueurs mais un capitaine, l'ajouter
+            Optional<Player> captain = playerRepository.findById(team.getCaptain().getId());
+            captain.ifPresent(players::add);
+        }
+        
+        // Mettre à jour les joueurs de l'équipe
         team.setPlayers(players);
-        return teamRepository.save(team);
+        
+        // Si pas de date de création, en définir une
+        if (team.getCreationDate() == null) {
+            team.setCreationDate(LocalDateTime.now());
+        }
+        
+        // Sauvegarder l'équipe et ses relations
+        Team savedTeam = teamRepository.save(team);
+        
+        // Mettre à jour la relation côté joueurs en utilisant la méthode utilitaire
+        for (Player player : players) {
+            player.addTeam(savedTeam);
+            playerRepository.save(player);
+        }
+        
+        return savedTeam;
     }
 
     public Team save(Team team) {

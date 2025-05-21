@@ -2,6 +2,7 @@ package com.example.tournois_demontis.Controller;
 
 import com.example.tournois_demontis.Entity.team.Team;
 import com.example.tournois_demontis.Entity.player.Player;
+import com.example.tournois_demontis.Repository.PlayerRepository;
 import com.example.tournois_demontis.Service.TeamService;
 import com.example.tournois_demontis.Service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
+import jakarta.validation.Valid;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -22,8 +22,12 @@ import java.util.Set;
 public class TeamController {
     @Autowired
     private TeamService teamService;
+    
     @Autowired
     private PlayerService playerService;
+    
+    @Autowired
+    private PlayerRepository playerRepository;
 
     @GetMapping
     public String listTeams(Model model) {
@@ -33,23 +37,102 @@ public class TeamController {
 
     @GetMapping("/new")
     public String showCreateForm(Model model) {
-        model.addAttribute("team", new Team());
-        model.addAttribute("allPlayers", playerService.findAll());
+        Team team = new Team();
+        team.setPlayers(new HashSet<>()); // Initialiser la liste des joueurs
+        model.addAttribute("team", team);
+        
+        // Récupérer tous les joueurs et les ajouter au modèle
+        Set<Player> allPlayers = new HashSet<>(playerService.findAll());
+        model.addAttribute("allPlayers", allPlayers);
+        
+        // Ajouter une méthode utilitaire pour vérifier si un joueur est dans l'équipe
+        model.addAttribute("isPlayerInTeam", (java.util.function.BiFunction<Team, Long, Boolean>) (t, playerId) -> {
+            if (t == null || t.getPlayers() == null || playerId == null) {
+                return false;
+            }
+            return t.getPlayers().stream().anyMatch(p -> p.getId().equals(playerId));
+        });
+        
         return "team/form";
     }
 
     @PostMapping("/new")
-    public String createTeam(@ModelAttribute("team") Team team, BindingResult result, @RequestParam(value = "players", required = false) Set<Long> playerIds, @RequestParam(value = "logo", required = false) MultipartFile logo, Model model) {
-        if (result.hasErrors()) {
-            model.addAttribute("allPlayers", playerService.findAll());
+    public String createTeam(
+            @ModelAttribute("team") Team team,
+            BindingResult result,
+            @RequestParam(value = "players", required = false) Set<Long> playerIds,
+            @RequestParam(value = "captainId", required = false) Long captainId,
+            @RequestParam(value = "logo", required = false) MultipartFile logo,
+            Model model) {
+            
+        // Initialiser la liste des joueurs si elle est nulle
+        if (playerIds == null) {
+            playerIds = new HashSet<>();
+        }
+        
+        // Validation manuelle
+        boolean hasErrors = false;
+        
+        // Valider le nom de l'équipe
+        if (team.getName() == null || team.getName().trim().isEmpty()) {
+            result.rejectValue("name", "required.team.name", "Le nom de l'équipe est obligatoire");
+            hasErrors = true;
+        } else if (teamService.existsByName(team.getName())) {
+            result.rejectValue("name", "duplicate.team.name", "Une équipe avec ce nom existe déjà");
+            hasErrors = true;
+        }
+        
+        // Valider et définir le capitaine
+        if (captainId == null || captainId <= 0) {
+            model.addAttribute("captainError", "Veuillez sélectionner un capitaine");
+            hasErrors = true;
+        } else {
+            try {
+                Player captain = playerRepository.findById(captainId).orElse(null);
+                if (captain == null) {
+                    model.addAttribute("captainError", "Le capitaine sélectionné n'existe pas");
+                    hasErrors = true;
+                } else {
+                    team.setCaptain(captain);
+                    playerIds.add(captainId); // Ajouter le capitaine aux joueurs
+                }
+            } catch (Exception e) {
+                model.addAttribute("captainError", "Erreur lors de la récupération du capitaine");
+                hasErrors = true;
+            }
+        }
+        
+        // Valider les joueurs sélectionnés
+        if (!playerIds.isEmpty()) {
+            long existingPlayersCount = playerRepository.countByIdIn(playerIds);
+            if (existingPlayersCount != playerIds.size()) {
+                result.rejectValue("players", "invalid.players", "Un ou plusieurs joueurs sélectionnés n'existent pas");
+                hasErrors = true;
+            }
+        }
+        
+        if (hasErrors || result.hasErrors()) {
+            model.addAttribute("allPlayers", playerRepository.findAll());
             return "team/form";
         }
-        if (playerIds == null) playerIds = new HashSet<>();
-        if (logo != null && !logo.isEmpty()) {
-            team.setLogoUrl(logo.getOriginalFilename());
+        
+        try {
+            
+            // Gérer le logo
+            if (logo != null && !logo.isEmpty()) {
+                // Ici, vous pourriez ajouter la logique pour sauvegarder le fichier
+                team.setLogoUrl(logo.getOriginalFilename());
+            }
+            
+            // Sauvegarder l'équipe
+            Team savedTeam = teamService.save(team, playerIds);
+            return "redirect:/teams/" + savedTeam.getId();
+            
+        } catch (Exception e) {
+            model.addAttribute("error", "Une erreur est survenue lors de la création de l'équipe: " + e.getMessage());
+            model.addAttribute("allPlayers", playerRepository.findAll());
+            return "team/form";
         }
-        teamService.save(team, playerIds);
-        return "redirect:/teams";
     }
 
     @GetMapping("/{id}/edit")
@@ -58,20 +141,79 @@ public class TeamController {
         if (teamOpt.isEmpty()) {
             return "redirect:/teams";
         }
-        model.addAttribute("team", teamOpt.get());
-        model.addAttribute("allPlayers", playerService.findAll());
+        Team team = teamOpt.get();
+        
+        // Charger explicitement les joueurs de l'équipe
+        Set<Player> players = team.getPlayers();
+        if (players != null) {
+            // Initialiser la collection si nécessaire
+            players.size(); // Force le chargement des joueurs
+        }
+        
+        // Récupérer tous les joueurs et les ajouter au modèle
+        Set<Player> allPlayers = new HashSet<>(playerService.findAll());
+        
+        model.addAttribute("team", team);
+        model.addAttribute("allPlayers", allPlayers);
+        
+        // Ajouter la même méthode utilitaire que dans showCreateForm
+        model.addAttribute("isPlayerInTeam", (java.util.function.BiFunction<Team, Long, Boolean>) (t, playerId) -> {
+            if (t == null || t.getPlayers() == null || playerId == null) {
+                return false;
+            }
+            return t.getPlayers().stream().anyMatch(p -> p.getId().equals(playerId));
+        });
+        
         return "team/form";
     }
 
     @PostMapping("/{id}/edit")
-    public String updateTeam(@PathVariable Long id, @ModelAttribute("team") Team team, BindingResult result, @RequestParam(value = "players", required = false) Set<Long> playerIds, @RequestParam(value = "logo", required = false) MultipartFile logo, Model model) {
-        if (result.hasErrors()) {
-            model.addAttribute("allPlayers", playerService.findAll());
-            return "team/form";
+    public String updateTeam(
+            @PathVariable Long id,
+            @Valid @ModelAttribute("team") Team team,
+            BindingResult result,
+            @RequestParam(value = "players", required = false) Set<Long> playerIds,
+            @RequestParam(value = "captainId", required = false) Long captainId,
+            @RequestParam(value = "logo", required = false) MultipartFile logo,
+            Model model) {
+            
+        // Vérifications personnalisées
+        Optional<Team> existingTeamOpt = teamService.findById(id);
+        if (existingTeamOpt.isPresent()) {
+            Team existingTeam = existingTeamOpt.get();
+            // Vérifier si le nom est déjà utilisé par une autre équipe
+            if (!existingTeam.getName().equals(team.getName()) && 
+                teamService.existsByName(team.getName())) {
+                result.rejectValue("name", "duplicate.team.name", "Une équipe avec ce nom existe déjà");
+            }
+            
+            if (result.hasErrors()) {
+                model.addAttribute("allPlayers", playerService.findAll());
+                return "team/form";
+            }
+            
+            // Gérer le capitaine
+            if (captainId != null) {
+                Optional<Player> captain = playerService.findById(captainId);
+                captain.ifPresent(team::setCaptain);
+            } else {
+                // Conserver le capitaine existant si non modifié
+                team.setCaptain(existingTeam.getCaptain());
+            }
+            
+            // Gérer le logo
+            if (logo != null && !logo.isEmpty()) {
+                team.setLogoUrl(logo.getOriginalFilename());
+            } else {
+                // Conserver le logo existant si non modifié
+                team.setLogoUrl(existingTeam.getLogoUrl());
+            }
+            
+            team.setId(id);
+            teamService.save(team, playerIds != null ? playerIds : new HashSet<>());
+            return "redirect:/teams";
         }
-        team.setId(id);
-        if (playerIds == null) playerIds = new HashSet<>();
-        teamService.save(team, playerIds);
+        
         return "redirect:/teams";
     }
 
@@ -89,5 +231,15 @@ public class TeamController {
     public String deleteTeam(@PathVariable Long id) {
         teamService.deleteById(id);
         return "redirect:/teams";
+    }
+    
+    @ModelAttribute
+    public void addAttributes(Model model) {
+        model.addAttribute("isPlayerInTeam", (java.util.function.BiFunction<Team, Long, Boolean>) (team, playerId) -> {
+            if (team == null || team.getPlayers() == null || playerId == null) {
+                return false;
+            }
+            return team.getPlayers().stream().anyMatch(p -> p.getId().equals(playerId));
+        });
     }
 }
