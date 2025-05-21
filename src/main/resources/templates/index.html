@@ -1,128 +1,243 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion de Tournois E-Sport</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .feature-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .feature-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-        .hero-section {
-            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 100px 0;
-        }
-        .action-button {
-            margin-right: 10px;
-            margin-bottom: 10px;
-        }
-        .section-header {
-            border-bottom: 2px solid #f8f9fa;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-        }
-    </style>
-</head>
-<body>
-    <!-- Section héro -->
-    <div class="hero-section mb-5">
-        <div class="container text-center">
-            <h1 class="display-4 fw-bold">Gestion de Tournois E-Sport</h1>
-            <p class="lead">Organisez, gérez et participez à des tournois d'e-sport en toute simplicité</p>
-            <a href="/tournaments" class="btn btn-primary btn-lg mt-3">Explorer les tournois</a>
+<head th:replace="~{fragments/head :: head('Gestion de Tournois E-Sport')}"></head>
+<body class="cyber-bg tw-min-h-screen tw-text-white">
+    <!-- Section héro avec style gaming -->
+    <div class="tw-relative tw-overflow-hidden tw-py-20 tw-mb-10 tw-bg-cyber-darker" style="background-image: url('https://wallpaperaccess.com/full/1462795.jpg'); background-size: cover; background-position: center;">
+        <!-- Overlay avec effet de grille -->
+        <div class="tw-absolute tw-inset-0 tw-bg-cyber-darker tw-bg-opacity-70 tw-grid-bg">
         </div>
-    </div>
-
-    <!-- Menu rapide -->
-    <div class="container mb-5 text-center">
-        <div class="btn-group btn-group-lg">
-            <a href="/teams" class="btn btn-danger"><i class="fas fa-users me-2"></i> Équipes</a>
-            <a href="/players" class="btn btn-success"><i class="fas fa-user me-2"></i> Joueurs</a>
-            <a href="/tournaments" class="btn btn-primary"><i class="fas fa-trophy me-2"></i> Tournois</a>
-        </div>
-    </div>
-
-    <!-- Section des fonctionnalités principales -->
-    <div class="container mb-5">
-        <h2 class="text-center section-header">Fonctionnalités principales</h2>
         
-        <div class="row g-4">
-            <!-- Carte des équipes -->
-            <div class="col-md-6 mb-4">
-                <div class="card feature-card h-100 border-danger shadow">
-                    <div class="card-header bg-danger text-white">
-                        <h3 class="mb-0"><i class="fas fa-users me-2"></i> Gestion des Équipes</h3>
+        <!-- Déchirure du haut -->
+        <div class="cyber-tear tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-h-10"></div>
+        
+        <div class="container tw-relative tw-z-10 tw-text-center">
+            <h1 class="tw-font-orbitron tw-text-6xl tw-font-bold tw-mb-4 cyber-glitch" data-text="Tournois E-Sport">
+                <span class="tw-text-cyber-blue">Tournois</span> <span class="tw-text-cyber-pink">E-Sport</span>
+            </h1>
+            <p class="tw-font-russo tw-text-xl tw-text-cyber-blue tw-mb-8 tw-opacity-80">Organisez, gérez et participez à des tournois d'e-sport en toute simplicité</p>
+            <a href="/tournaments" class="neon-btn tw-bg-cyber-purple tw-text-white tw-px-8 tw-py-3 tw-rounded-md tw-font-bold tw-inline-block tw-transition tw-duration-300 tw-hover:tw-bg-cyber-pink tw-hover:tw-shadow-lg tw-font-orbitron">
+                <i class="fas fa-trophy tw-mr-2"></i> EXPLORER LES TOURNOIS
+            </a>
+        </div>
+        
+        <!-- Déchirure du bas -->
+        <div class="cyber-tear tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-10"></div>
+    </div>
+
+    <!-- Menu rapide avec style gaming -->
+    <div class="container tw-mb-16 tw-text-center">
+        <div class="tw-flex tw-flex-wrap tw-justify-center tw-gap-6">
+            <a href="/teams" class="neon-border tw-bg-cyber-dark tw-text-cyber-red tw-px-6 tw-py-4 tw-rounded-md tw-shadow-md tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker tw-hover:tw-shadow-lg tw-font-russo">
+                <i class="fas fa-users tw-mr-2"></i> ÉQUIPES
+            </a>
+            <a href="/players" class="neon-border tw-bg-cyber-dark tw-text-cyber-green tw-px-6 tw-py-4 tw-rounded-md tw-shadow-md tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker tw-hover:tw-shadow-lg tw-font-russo">
+                <i class="fas fa-user tw-mr-2"></i> JOUEURS
+            </a>
+            <a href="/tournaments" class="neon-border tw-bg-cyber-dark tw-text-cyber-blue tw-px-6 tw-py-4 tw-rounded-md tw-shadow-md tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker tw-hover:tw-shadow-lg tw-font-russo">
+                <i class="fas fa-trophy tw-mr-2"></i> TOURNOIS
+            </a>
+        </div>
+    </div>
+
+    <!-- Section des fonctionnalités principales avec style gaming -->
+    <div class="container tw-mb-20">
+        <h2 class="tw-font-orbitron tw-text-4xl tw-font-bold tw-text-center tw-mb-10 tw-text-cyber-blue tw-uppercase">Fonctionnalités</h2>
+        
+        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-8">
+            <!-- Carte des équipes avec style gaming -->
+            <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-transition-all tw-duration-300 tw-hover:tw-shadow-2xl">
+                <div class="tw-bg-gradient-to-r tw-from-cyber-red tw-to-cyber-pink tw-p-4 cyber-tear">
+                    <h3 class="tw-font-russo tw-text-xl tw-font-bold tw-flex tw-items-center">
+                        <i class="fas fa-users tw-mr-3 tw-text-2xl"></i> GESTION DES ÉQUIPES
+                    </h3>
+                </div>
+                <div class="tw-p-6">
+                    <p class="tw-text-gray-300 tw-mb-6">Créez et gérez des équipes de joueurs pour participer aux tournois. Assignez un capitaine et suivez les performances de votre équipe.</p>
+                    <div class="tw-flex tw-flex-wrap tw-gap-3 tw-mb-6">
+                        <a href="/teams" class="tw-flex tw-items-center tw-px-4 tw-py-2 tw-rounded-md tw-border tw-border-cyber-red tw-text-cyber-red tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker">
+                            <i class="fas fa-list tw-mr-2"></i> Liste des équipes
+                        </a>
+                        <a href="/teams/new" class="neon-btn tw-flex tw-items-center tw-px-4 tw-py-2 tw-rounded-md tw-bg-cyber-red tw-text-white tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-cyber-pink">
+                            <i class="fas fa-plus tw-mr-2"></i> Créer une équipe
+                        </a>
                     </div>
-                    <div class="card-body">
-                        <p>Créez et gérez des équipes de joueurs pour participer aux tournois. Assignez un capitaine et suivez les performances de votre équipe.</p>
-                        <div class="d-flex flex-wrap">
-                            <a href="/teams" class="btn btn-outline-danger action-button">
-                                <i class="fas fa-list me-2"></i> Liste des équipes
-                            </a>
-                            <a href="/teams/new" class="btn btn-danger action-button">
-                                <i class="fas fa-plus me-2"></i> Créer une équipe
-                            </a>
-                        </div>
-                        <hr>
-                        <h5>Fonctionnalités :</h5>
-                        <ul>
-                            <li>Création et gestion d'équipes</li>
-                            <li>Sélection de capitaine</li>
-                            <li>Ajout et suppression de membres</li>
-                            <li>Suivi des performances d'équipe</li>
+                    <div class="tw-border-t tw-border-gray-700 tw-pt-4">
+                        <h5 class="tw-font-orbitron tw-font-bold tw-text-cyber-red tw-mb-3">Fonctionnalités :</h5>
+                        <ul class="tw-space-y-2 tw-text-gray-300">
+                            <li class="tw-flex tw-items-start">
+                                <i class="fas fa-check-circle tw-text-cyber-red tw-mt-1 tw-mr-2"></i> Création et gestion d'équipes
+                            </li>
+                            <li class="tw-flex tw-items-start">
+                                <i class="fas fa-check-circle tw-text-cyber-red tw-mt-1 tw-mr-2"></i> Sélection de capitaine
+                            </li>
+                            <li class="tw-flex tw-items-start">
+                                <i class="fas fa-check-circle tw-text-cyber-red tw-mt-1 tw-mr-2"></i> Ajout et suppression de membres
+                            </li>
+                            <li class="tw-flex tw-items-start">
+                                <i class="fas fa-check-circle tw-text-cyber-red tw-mt-1 tw-mr-2"></i> Suivi des performances d'équipe
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
             
-            <!-- Carte des joueurs -->
-            <div class="col-md-6 mb-4">
-                <div class="card feature-card h-100 border-success shadow">
-                    <div class="card-header bg-success text-white">
-                        <h3 class="mb-0"><i class="fas fa-user me-2"></i> Gestion des Joueurs</h3>
+            <!-- Carte des joueurs avec style gaming -->
+            <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-transition-all tw-duration-300 tw-hover:tw-shadow-2xl">
+                <div class="tw-bg-gradient-to-r tw-from-cyber-green tw-to-cyber-blue tw-p-4 cyber-tear">
+                    <h3 class="tw-font-russo tw-text-xl tw-font-bold tw-flex tw-items-center">
+                        <i class="fas fa-user tw-mr-3 tw-text-2xl"></i> GESTION DES JOUEURS
+                    </h3>
+                </div>
+                <div class="tw-p-6">
+                    <p class="tw-text-gray-300 tw-mb-6">Gérez les profils des joueurs, suivez leurs performances et leur participation aux tournois et équipes.</p>
+                    <div class="tw-flex tw-flex-wrap tw-gap-3 tw-mb-6">
+                        <a href="/players" class="tw-flex tw-items-center tw-px-4 tw-py-2 tw-rounded-md tw-border tw-border-cyber-green tw-text-cyber-green tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker">
+                            <i class="fas fa-list tw-mr-2"></i> Liste des joueurs
+                        </a>
+                        <a href="/players/new" class="neon-btn tw-flex tw-items-center tw-px-4 tw-py-2 tw-rounded-md tw-bg-cyber-green tw-text-white tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-green-700">
+                            <i class="fas fa-plus tw-mr-2"></i> Ajouter un joueur
+                        </a>
                     </div>
-                    <div class="card-body">
-                        <p>Gérez les profils des joueurs, suivez leurs performances et leur participation aux tournois et équipes.</p>
-                        <div class="d-flex flex-wrap">
-                            <a href="/players" class="btn btn-outline-success action-button">
-                                <i class="fas fa-list me-2"></i> Liste des joueurs
-                            </a>
-                            <a href="/players/new" class="btn btn-success action-button">
-                                <i class="fas fa-plus me-2"></i> Ajouter un joueur
-                            </a>
-                        </div>
-                        <hr>
-                        <h5>Fonctionnalités :</h5>
-                        <ul>
-                            <li>Création et gestion de profils joueurs</li>
-                            <li>Suivi des statistiques individuelles</li>
-                            <li>Historique des matchs et tournois</li>
-                            <li>Appartenance à des équipes</li>
+                    <div class="tw-border-t tw-border-gray-700 tw-pt-4">
+                        <h5 class="tw-font-orbitron tw-font-bold tw-text-cyber-green tw-mb-3">Fonctionnalités :</h5>
+                        <ul class="tw-space-y-2 tw-text-gray-300">
+                            <li class="tw-flex tw-items-start">
+                                <i class="fas fa-check-circle tw-text-cyber-green tw-mt-1 tw-mr-2"></i> Création et gestion de profils joueurs
+                            </li>
+                            <li class="tw-flex tw-items-start">
+                                <i class="fas fa-check-circle tw-text-cyber-green tw-mt-1 tw-mr-2"></i> Suivi des statistiques individuelles
+                            </li>
+                            <li class="tw-flex tw-items-start">
+                                <i class="fas fa-check-circle tw-text-cyber-green tw-mt-1 tw-mr-2"></i> Historique des matchs et tournois
+                            </li>
+                            <li class="tw-flex tw-items-start">
+                                <i class="fas fa-check-circle tw-text-cyber-green tw-mt-1 tw-mr-2"></i> Appartenance à des équipes
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    
 
+    <!-- Section Tournois à venir avec style gaming -->
+    <div class="tw-relative tw-overflow-hidden tw-py-16 tw-mb-20 tw-bg-cyber-darker tw-grid-bg cyber-tear">
+        <div class="container tw-relative tw-z-10">
+            <h2 class="tw-font-orbitron tw-text-4xl tw-font-bold tw-text-center tw-mb-12 tw-text-cyber-yellow tw-uppercase">Tournois à venir</h2>
+            
+            <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-3 tw-gap-6">
+                <!-- Tournoi 1 -->
+                <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-transition-all tw-duration-300 tw-hover:tw-shadow-2xl">
+                    <div class="tw-relative tw-h-48 tw-overflow-hidden">
+                        <img src="https://wallpaperaccess.com/full/1909783.jpg" class="tw-w-full tw-h-full tw-object-cover" alt="Fortnite Tournament">
+                        <div class="tw-absolute tw-inset-0 tw-bg-gradient-to-t tw-from-cyber-dark tw-to-transparent"></div>
+                        <div class="tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-p-4">
+                            <span class="tw-bg-cyber-red tw-text-white tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold">BATTLE ROYALE</span>
+                        </div>
+                    </div>
+                    <div class="tw-p-4">
+                        <h3 class="tw-font-russo tw-text-xl tw-text-cyber-blue tw-mb-2">Fortnite Masters Cup</h3>
+                        <div class="tw-flex tw-items-center tw-mb-3 tw-text-gray-400 tw-text-sm">
+                            <i class="far fa-calendar-alt tw-mr-2"></i> 15 Juin 2025
+                            <i class="far fa-clock tw-ml-4 tw-mr-2"></i> 14:00
+                        </div>
+                        <p class="tw-text-gray-300 tw-text-sm tw-mb-4">Affrontez les meilleurs joueurs dans ce tournoi Fortnite avec 10 000€ de prize pool.</p>
+                        <a href="/tournaments/1" class="neon-btn tw-bg-cyber-purple tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-font-medium tw-block tw-text-center tw-transition tw-duration-300 tw-hover:tw-bg-cyber-pink tw-font-orbitron tw-text-sm">
+                            <i class="fas fa-gamepad tw-mr-2"></i> S'INSCRIRE
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Tournoi 2 -->
+                <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-transition-all tw-duration-300 tw-hover:tw-shadow-2xl">
+                    <div class="tw-relative tw-h-48 tw-overflow-hidden">
+                        <img src="https://wallpaperaccess.com/full/2641074.jpg" class="tw-w-full tw-h-full tw-object-cover" alt="League of Legends Tournament">
+                        <div class="tw-absolute tw-inset-0 tw-bg-gradient-to-t tw-from-cyber-dark tw-to-transparent"></div>
+                        <div class="tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-p-4">
+                            <span class="tw-bg-cyber-blue tw-text-white tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold">MOBA</span>
+                        </div>
+                    </div>
+                    <div class="tw-p-4">
+                        <h3 class="tw-font-russo tw-text-xl tw-text-cyber-green tw-mb-2">LoL Championship</h3>
+                        <div class="tw-flex tw-items-center tw-mb-3 tw-text-gray-400 tw-text-sm">
+                            <i class="far fa-calendar-alt tw-mr-2"></i> 22 Juin 2025
+                            <i class="far fa-clock tw-ml-4 tw-mr-2"></i> 16:00
+                        </div>
+                        <p class="tw-text-gray-300 tw-text-sm tw-mb-4">Tournoi 5v5 de League of Legends avec qualifications en ligne et finales en LAN.</p>
+                        <a href="/tournaments/2" class="neon-btn tw-bg-cyber-purple tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-font-medium tw-block tw-text-center tw-transition tw-duration-300 tw-hover:tw-bg-cyber-pink tw-font-orbitron tw-text-sm">
+                            <i class="fas fa-gamepad tw-mr-2"></i> S'INSCRIRE
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Tournoi 3 -->
+                <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-transition-all tw-duration-300 tw-hover:tw-shadow-2xl">
+                    <div class="tw-relative tw-h-48 tw-overflow-hidden">
+                        <img src="https://wallpaperaccess.com/full/4582440.jpg" class="tw-w-full tw-h-full tw-object-cover" alt="Valorant Tournament">
+                        <div class="tw-absolute tw-inset-0 tw-bg-gradient-to-t tw-from-cyber-dark tw-to-transparent"></div>
+                        <div class="tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-p-4">
+                            <span class="tw-bg-cyber-yellow tw-text-black tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold">FPS</span>
+                        </div>
+                    </div>
+                    <div class="tw-p-4">
+                        <h3 class="tw-font-russo tw-text-xl tw-text-cyber-pink tw-mb-2">Valorant Pro League</h3>
+                        <div class="tw-flex tw-items-center tw-mb-3 tw-text-gray-400 tw-text-sm">
+                            <i class="far fa-calendar-alt tw-mr-2"></i> 30 Juin 2025
+                            <i class="far fa-clock tw-ml-4 tw-mr-2"></i> 18:00
+                        </div>
+                        <p class="tw-text-gray-300 tw-text-sm tw-mb-4">Compétition Valorant avec les meilleures équipes européennes. Streaming en direct.</p>
+                        <a href="/tournaments/3" class="neon-btn tw-bg-cyber-purple tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-font-medium tw-block tw-text-center tw-transition tw-duration-300 tw-hover:tw-bg-cyber-pink tw-font-orbitron tw-text-sm">
+                            <i class="fas fa-gamepad tw-mr-2"></i> S'INSCRIRE
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tw-text-center tw-mt-10">
+                <a href="/tournaments" class="neon-btn tw-bg-cyber-dark tw-border tw-border-cyber-blue tw-text-cyber-blue tw-px-8 tw-py-3 tw-rounded-md tw-font-bold tw-inline-block tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker tw-hover:tw-text-cyber-pink tw-hover:tw-border-cyber-pink tw-font-orbitron">
+                    <i class="fas fa-trophy tw-mr-2"></i> VOIR TOUS LES TOURNOIS
+                </a>
+            </div>
+        </div>
+    </div>
     
-    <!-- Pied de page -->
-    <footer class="bg-dark text-white mt-5 py-4">
-        <div class="container text-center">
-            <p>© 2025 Gestion de Tournois E-Sport. Tous droits réservés.</p>
+    <!-- Pied de page avec style gaming -->
+    <footer class="tw-relative tw-overflow-hidden tw-mt-20 tw-py-10" style="background: linear-gradient(to bottom, #0a0a20, #050518);">
+        <!-- Effet de grille cyberpunk -->
+        <div class="tw-absolute tw-inset-0 tw-grid-bg"></div>
+        
+        <!-- Déchirure du haut -->
+        <div class="cyber-tear tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-h-10"></div>
+        
+        <div class="container tw-relative tw-z-10 tw-text-center">
+            <div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-space-y-6">
+                <!-- Logo glitch -->
+                <div class="tw-mb-4">
+                    <h3 class="tw-font-orbitron tw-text-2xl tw-font-bold tw-mb-2">
+                        <span class="tw-text-cyber-blue">TOUR</span><span class="tw-text-cyber-pink">NOIS</span>
+                    </h3>
+                </div>
+                
+                <!-- Icônes de réseaux sociaux -->
+                <div class="tw-flex tw-space-x-6">
+                    <a href="#" class="tw-text-cyber-blue tw-hover:tw-text-cyber-pink tw-transition-colors" style="text-shadow: 0 0 10px rgba(0, 243, 255, 0.7);">
+                        <i class="fab fa-twitter tw-text-2xl"></i>
+                    </a>
+                    <a href="#" class="tw-text-cyber-purple tw-hover:tw-text-cyber-pink tw-transition-colors" style="text-shadow: 0 0 10px rgba(153, 0, 255, 0.7);">
+                        <i class="fab fa-discord tw-text-2xl"></i>
+                    </a>
+                    <a href="#" class="tw-text-cyber-pink tw-hover:tw-text-cyber-blue tw-transition-colors" style="text-shadow: 0 0 10px rgba(255, 0, 255, 0.7);">
+                        <i class="fab fa-twitch tw-text-2xl"></i>
+                    </a>
+                </div>
+                
+                <!-- Copyright -->
+                <p class="tw-text-gray-400 tw-font-russo tw-text-sm">© 2025 <span class="tw-text-cyber-blue">TOURNOIS E-SPORT</span>. Tous droits réservés.</p>
+            </div>
         </div>
     </footer>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
