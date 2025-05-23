@@ -2,7 +2,6 @@ package com.example.tournois_demontis.Entity.match;
 
 import com.example.tournois_demontis.Entity.game.Game;
 import com.example.tournois_demontis.Entity.player.Player;
-import com.example.tournois_demontis.Entity.score.Score;
 import com.example.tournois_demontis.Entity.tournament.Tournament;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
@@ -49,6 +48,15 @@ public class Match {
     @Column(name = "end_time")
     private LocalDateTime endTime;
     
+    @Column(name = "completion_date")
+    private LocalDateTime completionDate;
+    
+    @Column(name = "score1")
+    private Integer score1;
+    
+    @Column(name = "score2")
+    private Integer score2;
+    
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private MatchStatus status = MatchStatus.PENDING;
@@ -67,9 +75,6 @@ public class Match {
     @ManyToOne
     @JoinColumn(name = "winner_id")
     private Player winner;
-    
-    @OneToMany(mappedBy = "match", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Score> scores = new HashSet<>();
     
     // Constructeur vide requis par JPA
     public Match() {
@@ -193,12 +198,28 @@ public class Match {
         this.winner = winner;
     }
     
-    public Set<Score> getScores() {
-        return scores;
+    public Integer getScore1() {
+        return score1;
     }
     
-    public void setScores(Set<Score> scores) {
-        this.scores = scores;
+    public void setScore1(Integer score1) {
+        this.score1 = score1;
+    }
+    
+    public Integer getScore2() {
+        return score2;
+    }
+    
+    public void setScore2(Integer score2) {
+        this.score2 = score2;
+    }
+    
+    public LocalDateTime getCompletionDate() {
+        return completionDate;
+    }
+    
+    public void setCompletionDate(LocalDateTime completionDate) {
+        this.completionDate = completionDate;
     }
     
     // Helper methods
@@ -212,15 +233,7 @@ public class Match {
         player.getMatches().remove(this);
     }
     
-    public void addScore(Score score) {
-        scores.add(score);
-        score.setMatch(this);
-    }
-    
-    public void removeScore(Score score) {
-        scores.remove(score);
-        score.setMatch(null);
-    }
+    // Les méthodes liées aux scores ont été supprimées pour simplifier l'entité
     
     /**
      * Démarre le match, en mettant à jour le statut et l'heure de début

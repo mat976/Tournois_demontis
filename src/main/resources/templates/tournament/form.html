@@ -28,11 +28,24 @@
                     <h3 class="tw-font-russo tw-text-xl tw-text-white">INFORMATIONS DU TOURNOI</h3>
                 </div>
                 <div class="tw-p-6 tw-space-y-6">
+                    <!-- Type de tournoi -->
+                    <div class="tw-mb-6">
+                        <label for="tournamentType" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">TYPE DE TOURNOI</label>
+                        <select class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                id="tournamentType" name="tournamentType" required>
+                            <option value="single" th:selected="${tournamentType == 'single'}">SIMPLE ÉLIMINATION</option>
+                            <option value="double" th:selected="${tournamentType == 'double'}">DOUBLE ÉLIMINATION</option>
+                            <option value="roundrobin" th:selected="${tournamentType == 'roundrobin'}">ROUND ROBIN</option>
+                        </select>
+                        <!-- Ajouter un message d'erreur pour le type de tournoi -->
+                        <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${error != null && error.contains('type de tournoi')}">Veuillez sélectionner un type de tournoi.</div>
+                    </div>
+                    
                     <!-- Nom du tournoi -->
                     <div class="tw-mb-6">
                         <label for="name" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">NOM DU TOURNOI</label>
                         <input type="text" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
-                               id="name" th:field="*{name}" required>
+                               id="name" name="name" th:value="${tournament.name}" required>
                         <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
                             Veuillez entrer un nom valide.
                         </div>
@@ -42,20 +55,22 @@
                     <div class="tw-mb-6">
                         <label for="description" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">DESCRIPTION</label>
                         <textarea class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
-                                  id="description" th:field="*{description}" rows="3"></textarea>
+                                  id="description" name="description" rows="3" th:text="${tournament.description}"></textarea>
                     </div>
                     
                     <!-- Jeu -->
                     <div class="tw-mb-6">
                         <label for="game" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">JEU</label>
                         <select class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
-                                id="game" th:field="*{game}" required>
+                                id="game" name="game" required>
                             <option value="">-- SÉLECTIONNEZ UN JEU --</option>
                             <option th:each="gameOption : ${games}" 
                                     th:value="${gameOption.id}" 
                                     th:text="${gameOption.name}"
                                     th:selected="${tournament.game != null && tournament.game.id == gameOption.id}">Nom du jeu</option>
                         </select>
+                        <!-- Ajouter un message d'erreur pour le jeu -->
+                        <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${error != null && error.contains('jeu')}">Veuillez sélectionner un jeu.</div>
                         <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${#fields.hasErrors('game')}" th:errors="*{game}">
                             Veuillez sélectionner un jeu.
                         </div>
@@ -66,7 +81,7 @@
                         <div>
                             <label for="startDate" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">DATE DE DÉBUT</label>
                             <input type="datetime-local" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue date-picker" 
-                                   id="startDate" th:field="*{startDate}" required>
+                                   id="startDate" name="startDate" th:value="${tournament.startDate}" required>
                             <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">
                                 Veuillez sélectionner une date de début.
                             </div>
@@ -75,7 +90,7 @@
                         <div>
                             <label for="endDate" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">DATE DE FIN (OPTIONNELLE)</label>
                             <input type="datetime-local" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue date-picker" 
-                                   id="endDate" th:field="*{endDate}">
+                                   id="endDate" name="endDate" th:value="${tournament.endDate}">
                         </div>
                     </div>
                     
@@ -83,7 +98,7 @@
                     <div class="tw-mb-6">
                         <label for="maxParticipants" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">NOMBRE MAXIMUM DE PARTICIPANTS</label>
                         <input type="number" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
-                               id="maxParticipants" th:field="*{maxParticipants}" min="2">
+                               id="maxParticipants" name="maxParticipants" th:value="${tournament.maxParticipants}" min="2">
                         <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${#fields.hasErrors('maxParticipants')}" th:errors="*{maxParticipants}">
                             Le nombre minimum est 2.
                         </div>
@@ -146,6 +161,8 @@
     <footer th:replace="~{fragments/footer :: footer}"></footer>
     
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <!-- Ajouter la locale française de flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
     <script>
         // Initialiser Flatpickr pour les sélecteurs de date
         document.addEventListener('DOMContentLoaded', function() {
@@ -153,7 +170,8 @@
                 enableTime: true,
                 dateFormat: "Y-m-d H:i",
                 time_24hr: true,
-                theme: "dark"
+                theme: "dark",
+                locale: "fr" // Utiliser la locale française
             });
             
             // Validation des formulaires
