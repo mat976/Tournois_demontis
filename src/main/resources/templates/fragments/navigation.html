@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Fragment de navigation principal -->
+    <nav th:fragment="mainNav" class="tw-bg-slate-900 tw-border-b tw-border-indigo-500 tw-shadow-lg tw-shadow-indigo-500/50 tw-mb-8">
+        <div class="container tw-mx-auto tw-px-4 tw-py-4 tw-flex tw-justify-between tw-items-center">
+            <h1 class="tw-text-3xl tw-font-bold tw-text-indigo-400">Gestion des Tournois</h1>
+            <ul class="tw-flex tw-space-x-6">
+                <li><a href="/" class="tw-text-indigo-300 hover:tw-text-indigo-100">Accueil</a></li>
+                <li><a href="/tournaments" class="tw-text-indigo-300 hover:tw-text-indigo-100">Tournois</a></li>
+                <li><a href="/games" class="tw-text-indigo-300 hover:tw-text-indigo-100">Jeux</a></li>
+                <li><a href="/teams" class="tw-text-indigo-300 hover:tw-text-indigo-100">Équipes</a></li>
+                <li><a href="/players" class="tw-text-indigo-300 hover:tw-text-indigo-100">Joueurs</a></li>
+            </ul>
+        </div>
+    </nav>
+</body>
+</html>

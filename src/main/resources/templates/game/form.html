@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/head :: head(${game.id == null ? 'Créer un jeu' : 'Modifier le jeu'})}"></head>
+<body class="cyber-bg tw-min-h-screen tw-text-white">
+    <!-- En-tête avec titre -->
+    <div class="tw-relative tw-overflow-hidden tw-py-12 tw-mb-10 tw-bg-cyber-darker tw-grid-bg">
+        <div class="cyber-tear tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-h-10"></div>
+        <div class="container tw-relative tw-z-10 tw-text-center">
+            <h1 class="tw-font-orbitron tw-text-4xl tw-font-bold tw-mb-4">
+                <span th:if="${game.id == null}" class="tw-text-cyber-purple">NOUVEAU</span>
+                <span th:unless="${game.id == null}" class="tw-text-cyber-yellow">MODIFIER</span>
+                <span class="tw-text-cyber-blue">JEU</span>
+            </h1>
+            <p class="tw-font-russo tw-text-xl tw-text-cyber-blue tw-mb-8 tw-opacity-80" th:text="${game.id == null ? 'Créez un nouveau jeu pour vos tournois' : 'Modifiez les détails du jeu'}">Formulaire de jeu</p>
+        </div>
+        <div class="cyber-tear tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-10"></div>
+    </div>
+    
+    <div class="container tw-mb-16">
+        <!-- Formulaire de jeu -->
+        <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-mb-10">
+            <div class="tw-bg-gradient-to-r tw-from-cyber-purple tw-to-cyber-blue tw-p-4">
+                <h2 class="tw-font-russo tw-text-2xl tw-text-white" th:text="${game.id == null ? 'CRÉER UN NOUVEAU JEU' : 'MODIFIER LE JEU'}">FORMULAIRE DE JEU</h2>
+            </div>
+            
+            <div class="tw-p-6">
+                <form th:action="${game.id == null ? '/games' : '/games/' + game.id}" 
+                      th:object="${game}" method="post" class="tw-space-y-6" novalidate>
+                    
+                    <input type="hidden" th:if="*{id != null}" th:field="*{id}" />
+                    
+                    <!-- Nom du jeu -->
+                    <div class="tw-mb-6">
+                        <label for="name" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-mb-2">NOM DU JEU</label>
+                        <input type="text" id="name" th:field="*{name}" 
+                               class="tw-w-full tw-p-3 tw-rounded tw-text-white tw-bg-cyber-darker tw-border tw-border-cyber-blue focus:tw-border-cyber-pink focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-cyber-pink tw-transition tw-duration-300" 
+                               placeholder="Entrez le nom du jeu">
+                        <div th:if="${#fields.hasErrors('name')}" class="tw-text-cyber-red tw-mt-1 tw-font-bold" th:errors="*{name}">
+                            Erreur de nom
+                        </div>
+                    </div>
+                    
+                    <!-- Mode de jeu -->
+                    <div class="tw-mb-6">
+                        <label for="gameMode" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-mb-2">MODE DE JEU</label>
+                        <select id="gameMode" th:field="*{gameMode}" 
+                                class="tw-w-full tw-p-3 tw-rounded tw-text-white tw-bg-cyber-darker tw-border tw-border-cyber-blue focus:tw-border-cyber-pink focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-cyber-pink tw-transition tw-duration-300">
+                            <option value="">-- Sélectionnez un mode --</option>
+                            <option th:each="mode : ${gameModes}" 
+                                    th:value="${mode}" 
+                                    th:text="${mode}">Mode de jeu</option>
+                        </select>
+                        <div th:if="${#fields.hasErrors('gameMode')}" class="tw-text-cyber-red tw-mt-1 tw-font-bold" th:errors="*{gameMode}">
+                            Erreur de mode
+                        </div>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="tw-mb-6">
+                        <label for="description" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-mb-2">DESCRIPTION</label>
+                        <textarea id="description" th:field="*{description}" 
+                                  class="tw-w-full tw-p-3 tw-rounded tw-text-white tw-bg-cyber-darker tw-border tw-border-cyber-blue focus:tw-border-cyber-pink focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-cyber-pink tw-transition tw-duration-300" 
+                                  rows="4" placeholder="Décrivez le jeu"></textarea>
+                    </div>
+                    
+                    <!-- URL de l'image -->
+                    <div class="tw-mb-6">
+                        <label for="imageUrl" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-mb-2">IMAGE DU JEU (URL)</label>
+                        <input type="url" id="imageUrl" th:field="*{imageUrl}" 
+                               class="tw-w-full tw-p-3 tw-rounded tw-text-white tw-bg-cyber-darker tw-border tw-border-cyber-blue focus:tw-border-cyber-pink focus:tw-outline-none focus:tw-ring-1 focus:tw-ring-cyber-pink tw-transition tw-duration-300" 
+                               placeholder="https://exemple.com/image.jpg">
+                        <p class="tw-text-gray-400 tw-text-sm tw-mt-1">Entrez l'URL d'une image pour représenter ce jeu</p>
+                    </div>
+                    
+                    <!-- Note informative -->
+                    <div class="tw-mb-6 tw-bg-cyber-darker tw-border-l-4 tw-border-cyber-blue tw-p-4 tw-rounded">
+                        <p class="tw-text-cyber-blue tw-font-orbitron tw-mb-2">INFORMATION</p>
+                        <p class="tw-text-gray-300">
+                            Ce jeu sera utilisé dans les tournois. Les joueurs et équipes seront associés aux jeux via les matchs créés dans les tournois.
+                        </p>
+                    </div>
+                    
+                    <!-- Boutons d'action -->
+                    <div class="tw-flex tw-justify-between tw-mt-8">
+                        <a href="/games" class="tw-bg-cyber-darker tw-border tw-border-cyber-blue tw-text-cyber-blue tw-font-orbitron tw-py-2 tw-px-6 tw-rounded hover:tw-bg-cyber-blue hover:tw-text-black tw-transition tw-duration-300">
+                            <i class="fas fa-arrow-left tw-mr-2"></i> ANNULER
+                        </a>
+                        <button type="submit" class="neon-btn tw-bg-cyber-purple tw-text-white tw-font-orbitron tw-py-2 tw-px-6 tw-rounded hover:tw-bg-cyber-pink tw-transition tw-duration-300">
+                            <i class="fas fa-save tw-mr-2"></i>
+                            <span th:text="${game.id == null ? 'CRÉER LE JEU' : 'METTRE À JOUR'}">ENREGISTRER</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

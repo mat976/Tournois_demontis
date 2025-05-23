@@ -30,6 +30,9 @@ public class Game {
     @Column(length = 1000)
     private String description;
     
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageUrl;
+    
     @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Match> matches = new HashSet<>();
     
@@ -86,6 +89,14 @@ public class Game {
     
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
     
     public Set<Match> getMatches() {

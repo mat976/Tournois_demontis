@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments/head :: head('Détails du jeu - ' + ${game.name})}"></head>
+<body class="cyber-bg tw-min-h-screen tw-text-white">
+    <!-- En-tête avec titre -->
+    <div class="tw-relative tw-overflow-hidden tw-py-12 tw-mb-10 tw-bg-cyber-darker tw-grid-bg">
+        <div class="cyber-tear tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-h-10"></div>
+        <div class="container tw-relative tw-z-10 tw-text-center">
+            <h1 class="tw-font-orbitron tw-text-4xl tw-font-bold tw-mb-4">
+                <span class="tw-text-cyber-blue" th:text="${game.name}">NOM DU JEU</span>
+            </h1>
+            <div class="tw-inline-block tw-bg-cyber-darker tw-border tw-border-cyber-purple tw-text-cyber-purple tw-px-4 tw-py-1 tw-rounded-full tw-text-sm tw-font-bold tw-mb-4" th:text="${game.gameMode}">MODE DE JEU</div>
+            <p class="tw-font-russo tw-text-xl tw-text-cyber-blue tw-mb-8 tw-opacity-80">Détails et informations sur le jeu</p>
+        </div>
+        <div class="cyber-tear tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-10"></div>
+    </div>
+    
+    <div class="container tw-mb-16">
+        <!-- Actions rapides -->
+        <div class="tw-flex tw-justify-between tw-items-center tw-mb-6">
+            <a href="/games" class="tw-flex tw-items-center tw-bg-cyber-darker tw-border tw-border-cyber-blue tw-text-cyber-blue tw-px-4 tw-py-2 tw-rounded-md tw-font-medium tw-transition tw-duration-300 hover:tw-bg-cyber-blue hover:tw-text-black">
+                <i class="fas fa-arrow-left tw-mr-2"></i> RETOUR À LA LISTE
+            </a>
+            <div class="tw-flex tw-space-x-4">
+                <a th:href="@{/games/{id}/edit(id=${game.id})}" class="neon-btn tw-bg-cyber-yellow tw-text-black tw-px-4 tw-py-2 tw-rounded-md tw-font-medium tw-transition tw-duration-300 hover:tw-bg-cyber-green tw-font-orbitron">
+                    <i class="fas fa-edit tw-mr-2"></i> MODIFIER
+                </a>
+                <a th:href="@{/games/{id}/delete(id=${game.id})}" class="neon-btn tw-bg-cyber-red tw-text-white tw-px-4 tw-py-2 tw-rounded-md tw-font-medium tw-transition tw-duration-300 hover:tw-bg-cyber-pink tw-font-orbitron"
+                   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce jeu ?')">
+                    <i class="fas fa-trash tw-mr-2"></i> SUPPRIMER
+                </a>
+            </div>
+        </div>
+        
+        <!-- Détails du jeu -->
+        <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-mb-10">
+            <div class="tw-bg-gradient-to-r tw-from-cyber-purple tw-to-cyber-blue tw-p-4">
+                <h2 class="tw-font-russo tw-text-2xl tw-text-white">DÉTAILS DU JEU</h2>
+            </div>
+            <div class="tw-p-6">
+                <!-- Image et Description -->
+                <div class="tw-flex tw-flex-col md:tw-flex-row tw-gap-6 tw-mb-8">
+                    <!-- Image du jeu -->
+                    <div class="tw-w-full md:tw-w-1/3 tw-mb-4 md:tw-mb-0">
+                        <div class="tw-border tw-border-cyber-purple tw-rounded-md tw-overflow-hidden tw-h-64 tw-bg-cyber-darker">
+                            <img th:if="${game.imageUrl != null && !game.imageUrl.isEmpty()}" th:src="${game.imageUrl}" th:alt="${game.name}" 
+                                 class="tw-w-full tw-h-full tw-object-cover hover:tw-scale-105 tw-transition-transform tw-duration-500">
+                            <div th:unless="${game.imageUrl != null && !game.imageUrl.isEmpty()}" 
+                                 class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center">
+                                <i class="fas fa-gamepad tw-text-6xl tw-text-cyber-purple/30"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Description -->
+                    <div class="tw-w-full md:tw-w-2/3 tw-bg-cyber-darker tw-p-4 tw-rounded tw-border-l-4 tw-border-cyber-blue">
+                        <h3 class="tw-font-orbitron tw-text-xl tw-text-cyber-blue tw-mb-3">DESCRIPTION</h3>
+                        <p class="tw-text-gray-300 tw-leading-relaxed" th:text="${game.description ?: 'Aucune description disponible.'}">
+                            Description du jeu
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Information sur l'utilisation du jeu -->
+                <div class="tw-mb-8">
+                    <div class="tw-bg-cyber-darker tw-border-l-4 tw-border-cyber-blue tw-p-4 tw-rounded">
+                        <h3 class="tw-font-orbitron tw-text-xl tw-text-cyber-blue tw-mb-2">INFORMATION</h3>
+                        <p class="tw-text-gray-300 tw-leading-relaxed">
+                            Ce jeu est utilisé dans les tournois. Les joueurs et équipes sont associés à ce jeu via les matchs créés dans les tournois.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Tournois utilisant ce jeu -->
+                <div class="tw-mb-6">
+                    <h3 class="tw-font-orbitron tw-text-xl tw-text-cyber-yellow tw-mb-4">TOURNOIS UTILISANT CE JEU</h3>
+                    
+                    <div th:if="${game.matches.empty}" class="tw-bg-cyber-darker tw-text-cyber-blue tw-p-4 tw-rounded-md tw-text-center tw-border tw-border-cyber-blue">
+                        Aucun tournoi n'utilise ce jeu pour le moment
+                    </div>
+                    
+                    <div th:unless="${game.matches.empty}" class="tw-space-y-3">
+                        <div th:each="match : ${game.matches}" class="tw-bg-cyber-darker tw-border tw-border-cyber-yellow tw-rounded-md tw-overflow-hidden tw-transition-all tw-duration-300 hover:tw-shadow-lg hover:tw-shadow-cyber-yellow/30">
+                            <div class="tw-bg-gradient-to-r tw-from-cyber-yellow/20 tw-to-transparent tw-p-3 tw-border-b tw-border-cyber-yellow">
+                                <span th:text="${match.tournament.name}" class="tw-text-cyber-yellow tw-font-russo">Nom du tournoi</span>
+                            </div>
+                            <div class="tw-p-3 tw-flex tw-justify-between tw-items-center">
+                                <div class="tw-text-gray-300 tw-text-sm">
+                                    <i class="fas fa-calendar tw-mr-1 tw-text-cyber-blue"></i>
+                                    <span th:if="${match.tournament.startDate != null}" th:text="${#temporals.format(match.tournament.startDate, 'dd/MM/yyyy HH:mm')}">Date du tournoi</span>
+                                    <span th:unless="${match.tournament.startDate != null}">Date non définie</span>
+                                </div>
+                                <a th:href="@{/tournaments/{id}(id=${match.tournament.id})}" class="tw-bg-cyber-yellow tw-text-black tw-px-3 tw-py-1 tw-rounded tw-text-sm tw-font-bold tw-transition tw-duration-300 hover:tw-bg-cyber-green">
+                                    <i class="fas fa-trophy tw-mr-1"></i> VOIR LE TOURNOI
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+</html>

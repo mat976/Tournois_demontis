@@ -1,116 +1,150 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${tournament.id == null ? 'Créer un tournoi' : 'Modifier le tournoi'}">Formulaire de tournoi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-</head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h2 th:text="${tournament.id == null ? 'Créer un nouveau tournoi' : 'Modifier le tournoi'}">Formulaire de tournoi</h2>
-            </div>
-            <div class="card-body">
-                <form th:action="${tournament.id == null ? @{/tournaments} : @{/tournaments/__${tournament.id}__}}" 
-                      th:object="${tournament}" method="post" class="needs-validation" novalidate>
-                    
-                    <input type="hidden" th:if="*{id != null}" th:field="*{id}" />
-                    
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nom du tournoi</label>
-                        <input type="text" class="form-control" id="name" th:field="*{name}" required>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+<head th:replace="~{fragments/head :: head(${tournament.id == null ? 'Créer un tournoi' : 'Modifier le tournoi'})}"></head>
+<body class="cyber-bg tw-min-h-screen tw-text-white">
+    <!-- En-tête avec titre du formulaire -->
+    <div class="tw-relative tw-overflow-hidden tw-py-12 tw-mb-10 tw-bg-cyber-darker tw-grid-bg">
+        <div class="cyber-tear tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-h-10"></div>
+        <div class="container tw-relative tw-z-10 tw-text-center">
+            <h1 class="tw-font-orbitron tw-text-4xl tw-font-bold tw-mb-4 cyber-glitch" data-text="Tournoi">
+                <span class="tw-text-cyber-blue" th:text="${tournament.id == null ? 'CRÉER UN NOUVEAU TOURNOI' : 'MODIFIER LE TOURNOI'}">FORMULAIRE DE TOURNOI</span>
+            </h1>
+            <p class="tw-text-gray-300 tw-max-w-2xl tw-mx-auto tw-font-light">
+                Configurez les paramètres de votre tournoi et sélectionnez les participants pour commencer la compétition.  
+            </p>
+        </div>
+        <div class="cyber-tear tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-10"></div>
+    </div>
+    
+    <div class="container tw-mb-16">
+        <form th:action="${tournament.id == null ? '/tournaments' : '/tournaments/' + tournament.id}" 
+              th:object="${tournament}" method="post" class="tw-space-y-6" novalidate>
+            
+            <input type="hidden" th:if="*{id != null}" th:field="*{id}" />
+            
+            <!-- Informations du tournoi -->
+            <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-mb-10">
+                <div class="tw-bg-gradient-to-r tw-from-cyber-blue tw-to-cyber-purple tw-p-4">
+                    <h3 class="tw-font-russo tw-text-xl tw-text-white">INFORMATIONS DU TOURNOI</h3>
+                </div>
+                <div class="tw-p-6 tw-space-y-6">
+                    <!-- Nom du tournoi -->
+                    <div class="tw-mb-6">
+                        <label for="name" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">NOM DU TOURNOI</label>
+                        <input type="text" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                               id="name" th:field="*{name}" required>
+                        <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
                             Veuillez entrer un nom valide.
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                    <!-- Description -->
+                    <div class="tw-mb-6">
+                        <label for="description" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">DESCRIPTION</label>
+                        <textarea class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                  id="description" th:field="*{description}" rows="3"></textarea>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="game" class="form-label">Jeu</label>
-                        <select class="form-select" id="game" th:field="*{game}" required>
-                            <option value="">-- Sélectionnez un jeu --</option>
-                            <!-- Cette partie nécessite d'être adaptée avec les jeux disponibles -->
+                    <!-- Jeu -->
+                    <div class="tw-mb-6">
+                        <label for="game" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">JEU</label>
+                        <select class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                id="game" th:field="*{game}" required>
+                            <option value="">-- SÉLECTIONNEZ UN JEU --</option>
+                            <option th:each="gameOption : ${games}" 
+                                    th:value="${gameOption.id}" 
+                                    th:text="${gameOption.name}"
+                                    th:selected="${tournament.game != null && tournament.game.id == gameOption.id}">Nom du jeu</option>
                         </select>
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('game')}" th:errors="*{game}">
+                        <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${#fields.hasErrors('game')}" th:errors="*{game}">
                             Veuillez sélectionner un jeu.
                         </div>
                     </div>
                     
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="startDate" class="form-label">Date de début</label>
-                            <input type="datetime-local" class="form-control date-picker" id="startDate" th:field="*{startDate}" required>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">
+                    <!-- Dates -->
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6 tw-mb-6">
+                        <div>
+                            <label for="startDate" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">DATE DE DÉBUT</label>
+                            <input type="datetime-local" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue date-picker" 
+                                   id="startDate" th:field="*{startDate}" required>
+                            <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">
                                 Veuillez sélectionner une date de début.
                             </div>
                         </div>
                         
-                        <div class="col-md-6">
-                            <label for="endDate" class="form-label">Date de fin (optionnelle)</label>
-                            <input type="datetime-local" class="form-control date-picker" id="endDate" th:field="*{endDate}">
+                        <div>
+                            <label for="endDate" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">DATE DE FIN (OPTIONNELLE)</label>
+                            <input type="datetime-local" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue date-picker" 
+                                   id="endDate" th:field="*{endDate}">
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="maxParticipants" class="form-label">Nombre maximum de participants</label>
-                        <input type="number" class="form-control" id="maxParticipants" th:field="*{maxParticipants}" min="2">
-                        <div class="invalid-feedback" th:if="${#fields.hasErrors('maxParticipants')}" th:errors="*{maxParticipants}">
+                    <!-- Nombre maximum de participants -->
+                    <div class="tw-mb-6">
+                        <label for="maxParticipants" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">NOMBRE MAXIMUM DE PARTICIPANTS</label>
+                        <input type="number" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                               id="maxParticipants" th:field="*{maxParticipants}" min="2">
+                        <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${#fields.hasErrors('maxParticipants')}" th:errors="*{maxParticipants}">
                             Le nombre minimum est 2.
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="status" class="form-label">Statut</label>
-                        <select class="form-select" id="status" th:field="*{status}" required>
-                            <option value="PENDING">En attente</option>
-                            <option value="REGISTRATION_OPEN">Inscriptions ouvertes</option>
-                            <option value="REGISTRATION_CLOSED">Inscriptions fermées</option>
-                            <option value="IN_PROGRESS">En cours</option>
-                            <option value="COMPLETED">Terminé</option>
-                            <option value="CANCELLED">Annulé</option>
+                    <!-- Statut -->
+                    <div class="tw-mb-6">
+                        <label for="status" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">STATUT</label>
+                        <select class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                id="status" th:field="*{status}" required>
+                            <option value="PENDING">EN ATTENTE</option>
+                            <option value="REGISTRATION_OPEN">INSCRIPTIONS OUVERTES</option>
+                            <option value="REGISTRATION_CLOSED">INSCRIPTIONS FERMÉES</option>
+                            <option value="IN_PROGRESS">EN COURS</option>
+                            <option value="COMPLETED">TERMINÉ</option>
+                            <option value="CANCELLED">ANNULÉ</option>
                         </select>
                     </div>
-                    
-                    <!-- Section pour sélectionner les participants parmi les utilisateurs -->
-                    <div class="mb-3">
-                        <label class="form-label">Participants</label>
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div th:each="user : ${users}" class="col-md-4 mb-2">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" 
-                                                   th:value="${user.id}" 
-                                                   th:id="${'user-' + user.id}"
-                                                   name="participantIds">
-                                            <label class="form-check-label" th:for="${'user-' + user.id}" 
-                                                   th:text="${user.username + ' (' + user.fullName + ')'}">
-                                                Username (Full Name)
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
+                </div>
+            </div>
+            
+            <!-- Section pour sélectionner les participants -->
+            <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-mb-10">
+                <div class="tw-bg-gradient-to-r tw-from-cyber-green tw-to-cyber-blue tw-p-4">
+                    <h3 class="tw-font-russo tw-text-xl tw-text-white">PARTICIPANTS</h3>
+                </div>
+                <div class="tw-p-6">
+                    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-4">
+                        <div th:each="user : ${users}" class="tw-bg-cyber-darker tw-p-4 tw-rounded-md tw-border tw-border-gray-700 tw-transition-all tw-duration-300 hover:tw-border-cyber-green">
+                            <div class="tw-flex tw-items-center">
+                                <input class="tw-form-checkbox tw-h-5 tw-w-5 tw-text-cyber-green tw-rounded tw-border-gray-700 focus:tw-ring-cyber-green" 
+                                       type="checkbox" 
+                                       th:value="${user.id}" 
+                                       th:id="${('user-' + user.id)}"
+                                       name="participantIds"
+                                       th:checked="${tournament.participants != null && tournament.participants.contains(user)}">
+                                <label class="tw-ml-3 tw-text-gray-200 tw-cursor-pointer" th:for="${('user-' + user.id)}">
+                                    <span class="tw-block tw-font-medium" th:text="${user.username}">Username</span>
+                                    <span class="tw-block tw-text-xs tw-text-gray-400" th:text="${user.fullName}">Full Name</span>
+                                </label>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="d-flex justify-content-between mt-4">
-                        <a th:href="@{/tournaments}" class="btn btn-secondary">Annuler</a>
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    </div>
-                </form>
+                </div>
             </div>
-        </div>
+            
+            <!-- Boutons d'action -->
+            <div class="tw-flex tw-justify-between tw-mt-8">
+                <a th:href="@{/tournaments}" class="neon-btn tw-bg-cyber-dark tw-text-cyber-blue tw-border tw-border-cyber-blue tw-px-6 tw-py-3 tw-rounded-md tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker tw-font-orbitron">
+                    <i class="fas fa-arrow-left tw-mr-2"></i> ANNULER
+                </a>
+                <button type="submit" class="neon-btn tw-bg-cyber-green tw-text-black tw-px-6 tw-py-3 tw-rounded-md tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-green-400 tw-font-orbitron">
+                    <i class="fas fa-save tw-mr-2"></i> ENREGISTRER
+                </button>
+            </div>
+        </form>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Pied de page avec style gaming -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
         // Initialiser Flatpickr pour les sélecteurs de date
@@ -118,19 +152,23 @@
             flatpickr(".date-picker", {
                 enableTime: true,
                 dateFormat: "Y-m-d H:i",
-                time_24hr: true
+                time_24hr: true,
+                theme: "dark"
             });
             
-            // Validation des formulaires Bootstrap
-            const forms = document.querySelectorAll('.needs-validation');
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', event => {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
+            // Validation des formulaires
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    
+                    // Mettre en évidence les champs invalides
+                    const invalidInputs = form.querySelectorAll(':invalid');
+                    invalidInputs.forEach(input => {
+                        input.classList.add('tw-border-cyber-red');
+                    });
+                }
             });
         });
     </script>
