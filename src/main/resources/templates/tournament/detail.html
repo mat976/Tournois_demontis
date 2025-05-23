@@ -138,29 +138,37 @@
                 <div th:if="${tournament.participants.empty}" class="tw-bg-cyber-darker tw-text-cyber-blue tw-p-4 tw-rounded-md tw-text-center tw-border tw-border-cyber-blue">
                     Aucun participant inscrit à ce tournoi.
                 </div>
-                <div th:if="${!tournament.participants.empty}" class="tw-overflow-x-auto">
-                    <table class="tw-w-full tw-border-collapse">
-                        <thead>
-                            <tr class="tw-bg-cyber-darker tw-border-b tw-border-cyber-green">
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">NOM D'UTILISATEUR</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">NOM COMPLET</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">DATE D'INSCRIPTION</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">ACTIONS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="participant : ${tournament.participants}" class="tw-border-b tw-border-gray-700 tw-hover:tw-bg-cyber-darker tw-transition-colors">
-                                <td class="tw-p-3 tw-text-gray-200" th:text="${participant.username}">Nom d'utilisateur</td>
-                                <td class="tw-p-3 tw-text-gray-200" th:text="${participant.fullName}">Nom complet</td>
-                                <td class="tw-p-3 tw-text-gray-200" th:text="${#temporals.format(participant.createdAt, 'dd/MM/yyyy')}">Date d'inscription</td>
-                                <td class="tw-p-3">
-                                    <a href="#" class="neon-btn-sm tw-bg-cyber-blue tw-text-white tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold tw-inline-block">
-                                        <i class="fas fa-user tw-mr-1"></i> PROFIL
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div th:if="${!tournament.participants.empty}" class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4">
+                    <div th:each="participant : ${tournament.participants}" class="tw-bg-cyber-darker tw-rounded-lg tw-p-4 tw-border tw-border-cyber-green tw-flex tw-flex-col tw-items-center tw-transition-all tw-duration-300 hover:tw-shadow-glow-green hover:tw-scale-105">
+                        <a th:href="@{/players/{id}(id=${participant.id})}" class="tw-relative tw-w-16 tw-h-16 tw-rounded-full tw-overflow-hidden tw-border-2 tw-border-cyber-green tw-mb-3 tw-transition-all tw-duration-300 hover:tw-shadow-glow-green-lg">
+                            <img th:if="${participant.profilePictureUrl}" th:src="${participant.profilePictureUrl}" th:alt="${participant.username}" class="tw-w-full tw-h-full tw-object-cover">
+                            <div th:unless="${participant.profilePictureUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
+                                <i class="fas fa-user tw-text-cyber-green tw-text-2xl"></i>
+                            </div>
+                            <div class="tw-absolute tw-inset-0 tw-bg-gradient-to-t tw-from-cyber-dark/80 tw-to-transparent tw-opacity-0 hover:tw-opacity-100 tw-transition-opacity tw-duration-300 tw-flex tw-items-end tw-justify-center tw-pb-1">
+                                <span class="tw-text-xs tw-text-white tw-font-orbitron">PROFIL</span>
+                            </div>
+                        </a>
+                        <h5 class="tw-font-orbitron tw-text-lg tw-text-cyber-green tw-mb-1">
+                            <a th:href="@{/players/{id}(id=${participant.id})}" class="tw-text-cyber-green hover:tw-underline" th:text="${participant.username}">Pseudo du joueur</a>
+                        </h5>
+                        <p class="tw-text-gray-300 tw-text-sm tw-mb-2" th:if="${participant.fullName}" th:text="${participant.fullName}">Nom complet</p>
+                        <p class="tw-text-gray-400 tw-text-xs tw-mb-2">
+                            <i class="fas fa-calendar-alt tw-mr-1"></i>
+                            <span th:text="${#temporals.format(participant.createdAt, 'dd/MM/yyyy')}">Date d'inscription</span>
+                        </p>
+                        <div class="tw-flex tw-flex-wrap tw-gap-1 tw-justify-center tw-mb-2">
+                            <span th:if="${participant.active}" class="tw-bg-cyber-green tw-text-black tw-px-2 tw-py-0.5 tw-rounded tw-text-xs">
+                                <i class="fas fa-check-circle tw-mr-1"></i> ACTIF
+                            </span>
+                            <span th:unless="${participant.active}" class="tw-bg-cyber-red tw-text-white tw-px-2 tw-py-0.5 tw-rounded tw-text-xs">
+                                <i class="fas fa-times-circle tw-mr-1"></i> INACTIF
+                            </span>
+                        </div>
+                        <a th:href="@{/players/{id}(id=${participant.id})}" class="tw-bg-cyber-blue tw-text-white tw-px-3 tw-py-1 tw-rounded tw-text-xs tw-transition tw-duration-300 hover:tw-bg-blue-600 tw-mt-auto">
+                            <i class="fas fa-eye tw-mr-1"></i> VOIR PROFIL
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -177,51 +185,79 @@
                 <div th:if="${tournament.matches.empty}" class="tw-bg-cyber-darker tw-text-cyber-pink tw-p-4 tw-rounded-md tw-text-center tw-border tw-border-cyber-pink">
                     Aucun match n'a encore été créé pour ce tournoi.
                 </div>
-                <div th:if="${!tournament.matches.empty}" class="tw-overflow-x-auto">
-                    <table class="tw-w-full tw-border-collapse">
-                        <thead>
-                            <tr class="tw-bg-cyber-darker tw-border-b tw-border-cyber-pink">
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-pink">JOUEUR 1</th>
-                                <th class="tw-p-3 tw-text-center tw-font-orbitron tw-text-cyber-pink">VS</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-pink">JOUEUR 2</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-pink">SCORE</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-pink">STATUT</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-pink">DATE</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-pink">ACTIONS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="match : ${tournament.matches}" class="tw-border-b tw-border-gray-700 tw-hover:tw-bg-cyber-darker tw-transition-colors">
-                                <td class="tw-p-3 tw-text-gray-200" th:text="${match.player1 != null ? match.player1.username : 'TBD'}">Joueur 1</td>
-                                <td class="tw-p-3 tw-text-center tw-text-cyber-yellow tw-font-bold">VS</td>
-                                <td class="tw-p-3 tw-text-gray-200" th:text="${match.player2 != null ? match.player2.username : 'TBD'}">Joueur 2</td>
-                                <td class="tw-p-3">
-                                    <div class="tw-flex tw-items-center tw-justify-center tw-space-x-2">
-                                        <span class="tw-text-gray-200 tw-font-bold" th:text="${match.score1 != null ? match.score1 : '-'}">-</span>
-                                        <span class="tw-text-cyber-yellow">-</span>
-                                        <span class="tw-text-gray-200 tw-font-bold" th:text="${match.score2 != null ? match.score2 : '-'}">-</span>
+                <div th:if="${!tournament.matches.empty}" class="tw-grid tw-grid-cols-1 tw-gap-4">
+                    <div th:each="match : ${tournament.matches}" class="tw-bg-cyber-darker tw-rounded-lg tw-p-4 tw-border tw-border-cyber-pink tw-transition-all tw-duration-300 hover:tw-shadow-glow-pink">
+                        <div class="tw-flex tw-flex-col md:tw-flex-row tw-items-center tw-justify-between tw-gap-4">
+                            <!-- Joueur 1 -->
+                            <div class="tw-flex-1 tw-flex tw-flex-col tw-items-center">
+                                <a th:if="${match.player1 != null}" th:href="@{/players/{id}(id=${match.player1.id})}" class="tw-relative tw-w-16 tw-h-16 tw-rounded-full tw-overflow-hidden tw-border-2 tw-border-cyber-blue tw-mb-3 tw-transition-all tw-duration-300 hover:tw-shadow-glow-blue-lg">
+                                    <img th:if="${match.player1.profilePictureUrl}" th:src="${match.player1.profilePictureUrl}" th:alt="${match.player1.username}" class="tw-w-full tw-h-full tw-object-cover">
+                                    <div th:unless="${match.player1.profilePictureUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
+                                        <i class="fas fa-user tw-text-cyber-blue tw-text-2xl"></i>
                                     </div>
-                                </td>
-                                <td class="tw-p-3">
+                                </a>
+                                <div th:unless="${match.player1 != null}" class="tw-w-16 tw-h-16 tw-rounded-full tw-border-2 tw-border-gray-600 tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker tw-mb-3">
+                                    <span class="tw-text-gray-500 tw-font-orbitron tw-text-sm">TBD</span>
+                                </div>
+                                <h5 class="tw-font-orbitron tw-text-lg tw-text-cyber-blue tw-mb-1">
+                                    <a th:if="${match.player1 != null}" th:href="@{/players/{id}(id=${match.player1.id})}" class="tw-text-cyber-blue hover:tw-underline" th:text="${match.player1.username}">Joueur 1</a>
+                                    <span th:unless="${match.player1 != null}" class="tw-text-gray-500">À déterminer</span>
+                                </h5>
+                                <div class="tw-bg-cyber-blue/20 tw-px-4 tw-py-2 tw-rounded-lg tw-text-center">
+                                    <span class="tw-text-3xl tw-font-russo tw-text-cyber-blue" th:text="${match.score1 != null ? match.score1 : '-'}">-</span>
+                                </div>
+                            </div>
+                            
+                            <!-- VS -->
+                            <div class="tw-flex tw-flex-col tw-items-center tw-justify-center tw-py-4">
+                                <div class="tw-relative tw-w-12 tw-h-12 tw-rounded-full tw-bg-cyber-darker tw-border-2 tw-border-cyber-yellow tw-flex tw-items-center tw-justify-center tw-shadow-glow-yellow">
+                                    <span class="tw-text-cyber-yellow tw-font-bold tw-text-xl">VS</span>
+                                </div>
+                                <div class="tw-mt-2 tw-text-center">
                                     <span th:switch="${match.status}" class="tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold">
                                         <span th:case="'PENDING'" class="tw-bg-gray-600 tw-text-white">EN ATTENTE</span>
                                         <span th:case="'IN_PROGRESS'" class="tw-bg-cyber-blue tw-text-white">EN COURS</span>
                                         <span th:case="'COMPLETED'" class="tw-bg-cyber-green tw-text-black">TERMINÉ</span>
                                         <span th:case="'CANCELLED'" class="tw-bg-cyber-red tw-text-white">ANNULÉ</span>
                                     </span>
-                                </td>
-                                <td class="tw-p-3 tw-text-gray-200" th:text="${match.date != null ? #temporals.format(match.date, 'dd/MM/yyyy HH:mm') : 'Non programmé'}">Date</td>
-                                <td class="tw-p-3">
-                                    <a href="#" class="neon-btn-sm tw-bg-cyber-blue tw-text-white tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold tw-inline-block tw-mr-1">
-                                        <i class="fas fa-eye tw-mr-1"></i> VOIR
-                                    </a>
-                                    <a href="#" th:if="${match.status == 'PENDING' || match.status == 'IN_PROGRESS'}" class="neon-btn-sm tw-bg-cyber-green tw-text-black tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold tw-inline-block">
-                                        <i class="fas fa-edit tw-mr-1"></i> SCORE
-                                    </a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                                </div>
+                                <div class="tw-mt-2 tw-text-center tw-text-gray-400 tw-text-xs">
+                                    <i class="fas fa-calendar-alt tw-mr-1"></i>
+                                    <span th:text="${match.matchDate != null ? #temporals.format(match.matchDate, 'dd/MM/yyyy HH:mm') : 'Non programmé'}">Date</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Joueur 2 -->
+                            <div class="tw-flex-1 tw-flex tw-flex-col tw-items-center">
+                                <a th:if="${match.player2 != null}" th:href="@{/players/{id}(id=${match.player2.id})}" class="tw-relative tw-w-16 tw-h-16 tw-rounded-full tw-overflow-hidden tw-border-2 tw-border-cyber-pink tw-mb-3 tw-transition-all tw-duration-300 hover:tw-shadow-glow-pink-lg">
+                                    <img th:if="${match.player2.profilePictureUrl}" th:src="${match.player2.profilePictureUrl}" th:alt="${match.player2.username}" class="tw-w-full tw-h-full tw-object-cover">
+                                    <div th:unless="${match.player2.profilePictureUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
+                                        <i class="fas fa-user tw-text-cyber-pink tw-text-2xl"></i>
+                                    </div>
+                                </a>
+                                <div th:unless="${match.player2 != null}" class="tw-w-16 tw-h-16 tw-rounded-full tw-border-2 tw-border-gray-600 tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker tw-mb-3">
+                                    <span class="tw-text-gray-500 tw-font-orbitron tw-text-sm">TBD</span>
+                                </div>
+                                <h5 class="tw-font-orbitron tw-text-lg tw-text-cyber-pink tw-mb-1">
+                                    <a th:if="${match.player2 != null}" th:href="@{/players/{id}(id=${match.player2.id})}" class="tw-text-cyber-pink hover:tw-underline" th:text="${match.player2.username}">Joueur 2</a>
+                                    <span th:unless="${match.player2 != null}" class="tw-text-gray-500">À déterminer</span>
+                                </h5>
+                                <div class="tw-bg-cyber-pink/20 tw-px-4 tw-py-2 tw-rounded-lg tw-text-center">
+                                    <span class="tw-text-3xl tw-font-russo tw-text-cyber-pink" th:text="${match.score2 != null ? match.score2 : '-'}">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="tw-mt-4 tw-flex tw-justify-center tw-space-x-2">
+                            <a href="#" class="neon-btn-sm tw-bg-cyber-blue tw-text-white tw-px-3 tw-py-1 tw-rounded tw-text-sm tw-transition tw-duration-300 hover:tw-bg-blue-600">
+                                <i class="fas fa-eye tw-mr-1"></i> DÉTAILS DU MATCH
+                            </a>
+                            <a th:if="${match.status == 'PENDING' || match.status == 'IN_PROGRESS'}" href="#" class="neon-btn-sm tw-bg-cyber-green tw-text-black tw-px-3 tw-py-1 tw-rounded tw-text-sm tw-transition tw-duration-300 hover:tw-bg-green-400">
+                                <i class="fas fa-edit tw-mr-1"></i> METTRE À JOUR
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

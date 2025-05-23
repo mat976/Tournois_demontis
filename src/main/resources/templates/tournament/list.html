@@ -81,40 +81,44 @@
             </div>
         </div>
         
-        <!-- Section Liste des utilisateurs -->
+        <!-- Section Liste des joueurs -->
         <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden">
             <div class="tw-bg-gradient-to-r tw-from-cyber-green tw-to-cyber-blue tw-p-4">
                 <h3 class="tw-font-russo tw-text-xl tw-text-white">LISTE DES JOUEURS</h3>
             </div>
             <div class="tw-p-6">
                 <div th:if="${users != null and users.empty}" class="tw-bg-cyber-darker tw-text-cyber-blue tw-p-4 tw-rounded-md tw-text-center tw-border tw-border-cyber-blue">
-                    Aucun joueur disponible.
+                    <i class="fas fa-users tw-text-cyber-blue tw-text-4xl tw-mb-4"></i>
+                    <p class="tw-text-xl">Aucun joueur disponible.</p>
                 </div>
                 
-                <div th:if="${users != null and !users.empty}" class="tw-overflow-x-auto">
-                    <table class="tw-w-full tw-border-collapse">
-                        <thead>
-                            <tr class="tw-bg-cyber-darker tw-border-b tw-border-cyber-green">
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">NOM D'UTILISATEUR</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">NOM COMPLET</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">EMAIL</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">DATE DE CRÉATION</th>
-                                <th class="tw-p-3 tw-text-left tw-font-orbitron tw-text-cyber-green">STATUT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each="user : ${users}" class="tw-border-b tw-border-gray-700 tw-hover:tw-bg-cyber-darker tw-transition-colors">
-                                <td class="tw-p-3 tw-text-gray-200" th:text="${user.username}">Nom d'utilisateur</td>
-                                <td class="tw-p-3 tw-text-gray-200" th:text="${user.fullName}">Nom complet</td>
-                                <td class="tw-p-3 tw-text-gray-200" th:text="${user.email}">Email</td>
-                                <td class="tw-p-3 tw-text-gray-200" th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy')}">Date de création</td>
-                                <td class="tw-p-3">
-                                    <span th:if="${user.active}" class="tw-bg-cyber-green tw-text-black tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold">ACTIF</span>
-                                    <span th:unless="${user.active}" class="tw-bg-cyber-red tw-text-white tw-px-2 tw-py-1 tw-rounded tw-text-xs tw-font-bold">INACTIF</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div th:if="${users != null and !users.empty}" class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4">
+                    <div th:each="user : ${users}" class="tw-bg-cyber-darker tw-rounded-lg tw-p-4 tw-border tw-border-cyber-green tw-flex tw-flex-col tw-items-center tw-transition-all tw-duration-300 hover:tw-shadow-glow-green hover:tw-scale-105">
+                        <a th:href="@{/players/{id}(id=${user.id})}" class="tw-relative tw-w-16 tw-h-16 tw-rounded-full tw-overflow-hidden tw-border-2 tw-border-cyber-green tw-mb-3 tw-transition-all tw-duration-300 hover:tw-shadow-glow-green-lg">
+                            <img th:if="${user.profilePictureUrl}" th:src="${user.profilePictureUrl}" th:alt="${user.username}" class="tw-w-full tw-h-full tw-object-cover">
+                            <div th:unless="${user.profilePictureUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
+                                <i class="fas fa-user tw-text-cyber-green tw-text-2xl"></i>
+                            </div>
+                            <div class="tw-absolute tw-inset-0 tw-bg-gradient-to-t tw-from-cyber-dark/80 tw-to-transparent tw-opacity-0 hover:tw-opacity-100 tw-transition-opacity tw-duration-300 tw-flex tw-items-end tw-justify-center tw-pb-1">
+                                <span class="tw-text-xs tw-text-white tw-font-orbitron">PROFIL</span>
+                            </div>
+                        </a>
+                        <h5 class="tw-font-orbitron tw-text-lg tw-text-cyber-green tw-mb-1">
+                            <a th:href="@{/players/{id}(id=${user.id})}" class="tw-text-cyber-green hover:tw-underline" th:text="${user.username}">Pseudo du joueur</a>
+                        </h5>
+                        <p class="tw-text-gray-300 tw-text-sm tw-mb-2" th:if="${user.fullName}" th:text="${user.fullName}">Nom complet</p>
+                        <div class="tw-flex tw-flex-wrap tw-gap-1 tw-justify-center tw-mb-2">
+                            <span th:if="${user.active}" class="tw-bg-cyber-green tw-text-black tw-px-2 tw-py-0.5 tw-rounded tw-text-xs">
+                                <i class="fas fa-check-circle tw-mr-1"></i> ACTIF
+                            </span>
+                            <span th:unless="${user.active}" class="tw-bg-cyber-red tw-text-white tw-px-2 tw-py-0.5 tw-rounded tw-text-xs">
+                                <i class="fas fa-times-circle tw-mr-1"></i> INACTIF
+                            </span>
+                        </div>
+                        <a th:href="@{/players/{id}(id=${user.id})}" class="tw-bg-cyber-blue tw-text-white tw-px-3 tw-py-1 tw-rounded tw-text-xs tw-transition tw-duration-300 hover:tw-bg-blue-600 tw-mt-auto">
+                            <i class="fas fa-eye tw-mr-1"></i> VOIR PROFIL
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
