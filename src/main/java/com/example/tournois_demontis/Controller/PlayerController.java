@@ -127,10 +127,13 @@ public class PlayerController {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid player Id:" + id));
         model.addAttribute("player", player);
         
+        // Récupération des équipes associées au joueur (déjà disponible via player.getTeams())
+        // Mais on pourrait ajouter d'autres données ici si nécessaire
+        
         // Ajout des éléments du fil d'Ariane
         model.addAttribute("breadcrumbItems", createBreadcrumbItems("detail", player));
         
-        return "player/detail";
+        return "player/view";
     }
 
     @GetMapping("/{id}/edit")

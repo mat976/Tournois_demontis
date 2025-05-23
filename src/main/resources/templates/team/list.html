@@ -59,30 +59,33 @@
                             <td class="tw-p-3 tw-text-gray-300 tw-max-w-xs tw-truncate" th:text="${team.description ?: '-'}"></td>
                             <td class="tw-p-3">
                                 <div class="tw-flex tw-items-center tw-space-x-2" th:if="${team.captain}">
-                                    <div class="tw-w-8 tw-h-8 tw-rounded-full tw-overflow-hidden tw-border tw-border-cyber-yellow">
-                                        <img th:if="${team.captain.profilePictureUrl}" th:src="${team.captain.profilePictureUrl}" class="tw-w-full tw-h-full tw-object-cover" th:alt="${team.captain.nickname}">
-                                        <div th:unless="${team.captain.profilePictureUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
-                                            <i class="fas fa-user tw-text-cyber-yellow"></i>
+                                    <a th:href="@{/players/{id}(id=${team.captain.id})}" class="tw-flex tw-items-center tw-space-x-2 tw-group">
+                                        <div class="tw-w-8 tw-h-8 tw-rounded-full tw-overflow-hidden tw-border tw-border-cyber-yellow tw-transition-all tw-duration-300 group-hover:tw-shadow-glow-yellow">
+                                            <img th:if="${team.captain.profilePictureUrl}" th:src="${team.captain.profilePictureUrl}" class="tw-w-full tw-h-full tw-object-cover" th:alt="${team.captain.nickname}">
+                                            <div th:unless="${team.captain.profilePictureUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
+                                                <i class="fas fa-user tw-text-cyber-yellow"></i>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <span class="tw-text-cyber-yellow" th:text="${team.captain.nickname}"></span>
+                                        <span class="tw-text-cyber-yellow group-hover:tw-underline" th:text="${team.captain.nickname}"></span>
+                                    </a>
                                 </div>
                                 <span th:unless="${team.captain}" class="tw-text-gray-500">Aucun capitaine</span>
                             </td>
                             <td class="tw-p-3 tw-text-gray-400 tw-text-sm" th:text="${#temporals.format(team.creationDate, 'dd/MM/yyyy HH:mm')}"></td>
                             <td class="tw-p-3">
                                 <div class="tw-flex tw-flex-wrap tw-gap-1">
-                                    <div th:each="player : ${team.players}" class="tw-group tw-relative">
-                                        <div class="tw-w-8 tw-h-8 tw-rounded-full tw-overflow-hidden tw-border tw-border-cyber-blue tw-cursor-pointer">
+                                    <a th:each="player : ${team.players}" th:href="@{/players/{id}(id=${player.id})}" class="tw-group tw-relative">
+                                        <div class="tw-w-8 tw-h-8 tw-rounded-full tw-overflow-hidden tw-border tw-border-cyber-blue tw-cursor-pointer tw-transition-all tw-duration-300 group-hover:tw-shadow-glow-blue">
                                             <img th:if="${player.profilePictureUrl}" th:src="${player.profilePictureUrl}" class="tw-w-full tw-h-full tw-object-cover" th:alt="${player.nickname}">
                                             <div th:unless="${player.profilePictureUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
                                                 <i class="fas fa-user tw-text-cyber-blue"></i>
                                             </div>
                                         </div>
-                                        <div class="tw-hidden tw-group-hover:tw-block tw-absolute tw-bottom-full tw-left-1/2 tw-transform tw--translate-x-1/2 tw-mb-2 tw-bg-cyber-darker tw-text-cyber-blue tw-py-1 tw-px-2 tw-rounded tw-text-xs tw-whitespace-nowrap tw-border tw-border-cyber-blue">
+                                        <div class="tw-hidden tw-group-hover:tw-block tw-absolute tw-bottom-full tw-left-1/2 tw-transform tw--translate-x-1/2 tw-mb-2 tw-bg-cyber-darker tw-text-cyber-blue tw-py-1 tw-px-2 tw-rounded tw-text-xs tw-whitespace-nowrap tw-border tw-border-cyber-blue tw-z-10">
                                             <span th:text="${player.nickname}"></span>
+                                            <div class="tw-absolute tw-bottom-0 tw-left-1/2 tw-transform tw--translate-x-1/2 tw-translate-y-1/2 tw-rotate-45 tw-w-2 tw-h-2 tw-bg-cyber-darker tw-border-r tw-border-b tw-border-cyber-blue"></div>
                                         </div>
-                                    </div>
+                                    </a>
                                     <div th:if="${#lists.isEmpty(team.players)}" class="tw-text-gray-500 tw-text-sm">Aucun joueur</div>
                                 </div>
                             </td>

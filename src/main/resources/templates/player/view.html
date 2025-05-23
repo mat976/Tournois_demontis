@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Profil du Joueur')}"></head>
+<body class="cyber-bg tw-min-h-screen tw-text-white">
+    <!-- Fil d'Ariane (breadcrumb) -->
+    <div th:replace="~{fragments/breadcrumb :: breadcrumb(${breadcrumbItems})}"></div>
+    
+    <!-- En-tête avec titre -->
+    <div class="tw-relative tw-overflow-hidden tw-py-12 tw-mb-10 tw-bg-cyber-darker tw-grid-bg">
+        <div class="cyber-tear tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-h-10"></div>
+        <div class="container tw-relative tw-z-10 tw-text-center">
+            <h1 class="tw-font-orbitron tw-text-4xl tw-font-bold tw-mb-4">
+                <span class="tw-text-cyber-green">PROFIL</span> 
+                <span class="tw-text-cyber-blue">JOUEUR</span>
+            </h1>
+            <p class="tw-font-russo tw-text-xl tw-text-cyber-blue tw-mb-8 tw-opacity-80" th:text="${player.nickname ?: player.username}">Pseudo du joueur</p>
+        </div>
+        <div class="cyber-tear tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-10"></div>
+    </div>
+    
+    <div class="container tw-mb-16">
+        <div class="tw-grid tw-grid-cols-1 lg:tw-grid-cols-3 tw-gap-8">
+            <!-- Colonne de gauche - Informations principales -->
+            <div class="tw-col-span-1">
+                <!-- Carte du profil -->
+                <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-mb-6">
+                    <div class="tw-bg-gradient-to-r tw-from-cyber-green tw-to-cyber-blue tw-p-4">
+                        <h2 class="tw-font-russo tw-text-xl tw-text-white">PROFIL</h2>
+                    </div>
+                    <div class="tw-p-6 tw-flex tw-flex-col tw-items-center">
+                        <!-- Avatar du joueur -->
+                        <div class="tw-relative tw-w-40 tw-h-40 tw-rounded-full tw-overflow-hidden tw-border-4 tw-border-cyber-blue tw-mb-6 tw-shadow-glow-blue">
+                            <img th:if="${player.profilePictureUrl}" th:src="${player.profilePictureUrl}" class="tw-w-full tw-h-full tw-object-cover" th:alt="${player.nickname ?: player.username}">
+                            <div th:unless="${player.profilePictureUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
+                                <i class="fas fa-user-astronaut tw-text-cyber-blue tw-text-6xl"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- Nom et statut -->
+                        <h3 class="tw-font-orbitron tw-text-2xl tw-text-cyber-blue tw-mb-2" th:text="${player.nickname ?: player.username}">Pseudo</h3>
+                        <div class="tw-mb-4">
+                            <span th:if="${player.active}" class="tw-bg-cyber-green tw-text-black tw-px-3 tw-py-1 tw-rounded-full tw-text-sm tw-font-bold tw-flex tw-items-center">
+                                <span class="tw-w-2 tw-h-2 tw-bg-black tw-rounded-full tw-mr-2 tw-animate-pulse"></span>
+                                ACTIF
+                            </span>
+                            <span th:unless="${player.active}" class="tw-bg-cyber-red tw-text-white tw-px-3 tw-py-1 tw-rounded-full tw-text-sm tw-font-bold tw-flex tw-items-center">
+                                <span class="tw-w-2 tw-h-2 tw-bg-white tw-rounded-full tw-mr-2"></span>
+                                INACTIF
+                            </span>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="tw-flex tw-space-x-3 tw-mt-4 tw-w-full">
+                            <a th:href="@{/players/{id}/edit(id=${player.id})}" class="tw-bg-cyber-yellow tw-text-black tw-px-4 tw-py-2 tw-rounded tw-text-sm tw-transition tw-duration-300 tw-hover:tw-bg-yellow-400 tw-flex-1 tw-text-center">
+                                <i class="fas fa-edit tw-mr-1"></i> Modifier
+                            </a>
+                            <button th:attr="onclick='deletePlayer(' + ${player.id} + ')'" class="tw-bg-cyber-red tw-text-white tw-px-4 tw-py-2 tw-rounded tw-text-sm tw-transition tw-duration-300 tw-hover:tw-bg-red-600 tw-flex-1 tw-text-center">
+                                <i class="fas fa-trash tw-mr-1"></i> Supprimer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistiques -->
+                <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-mb-6">
+                    <div class="tw-bg-gradient-to-r tw-from-cyber-purple tw-to-cyber-pink tw-p-4">
+                        <h2 class="tw-font-russo tw-text-xl tw-text-white">STATISTIQUES</h2>
+                    </div>
+                    <div class="tw-p-6 tw-space-y-4">
+                        <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-border-gray-700 tw-pb-3">
+                            <span class="tw-text-gray-300">Équipes</span>
+                            <span class="tw-text-cyber-blue tw-font-orbitron" th:text="${#lists.size(player.teams ?: {})}">0</span>
+                        </div>
+                        <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-border-gray-700 tw-pb-3">
+                            <span class="tw-text-gray-300">Tournois</span>
+                            <span class="tw-text-cyber-blue tw-font-orbitron">0</span>
+                        </div>
+                        <div class="tw-flex tw-justify-between tw-items-center tw-border-b tw-border-gray-700 tw-pb-3">
+                            <span class="tw-text-gray-300">Matchs joués</span>
+                            <span class="tw-text-cyber-blue tw-font-orbitron">0</span>
+                        </div>
+                        <div class="tw-flex tw-justify-between tw-items-center">
+                            <span class="tw-text-gray-300">Date d'inscription</span>
+                            <span class="tw-text-cyber-blue tw-font-orbitron" th:text="${#temporals.format(player.createdAt, 'dd/MM/yyyy')}">01/01/2023</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Colonne centrale et droite - Détails et équipes -->
+            <div class="tw-col-span-1 lg:tw-col-span-2">
+                <!-- Informations détaillées -->
+                <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-mb-6">
+                    <div class="tw-bg-gradient-to-r tw-from-cyber-blue tw-to-cyber-green tw-p-4">
+                        <h2 class="tw-font-russo tw-text-xl tw-text-white">INFORMATIONS DÉTAILLÉES</h2>
+                    </div>
+                    <div class="tw-p-6">
+                        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
+                            <!-- Informations personnelles -->
+                            <div>
+                                <h3 class="tw-text-cyber-blue tw-font-orbitron tw-text-lg tw-mb-4 tw-border-b tw-border-cyber-blue/30 tw-pb-2">IDENTITÉ</h3>
+                                
+                                <div class="tw-space-y-3">
+                                    <div class="tw-flex tw-items-center tw-space-x-2">
+                                        <div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-cyber-darker tw-flex tw-items-center tw-justify-center">
+                                            <i class="fas fa-user tw-text-cyber-blue"></i>
+                                        </div>
+                                        <div>
+                                            <p class="tw-text-xs tw-text-gray-400">Nom d'utilisateur</p>
+                                            <p class="tw-text-gray-200" th:text="${player.username}">username</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tw-flex tw-items-center tw-space-x-2">
+                                        <div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-cyber-darker tw-flex tw-items-center tw-justify-center">
+                                            <i class="fas fa-id-card tw-text-cyber-blue"></i>
+                                        </div>
+                                        <div>
+                                            <p class="tw-text-xs tw-text-gray-400">Nom complet</p>
+                                            <p class="tw-text-gray-200" th:text="${player.fullName ?: 'Non spécifié'}">Nom complet</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tw-flex tw-items-center tw-space-x-2">
+                                        <div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-cyber-darker tw-flex tw-items-center tw-justify-center">
+                                            <i class="fas fa-signature tw-text-cyber-blue"></i>
+                                        </div>
+                                        <div>
+                                            <p class="tw-text-xs tw-text-gray-400">Surnom</p>
+                                            <p class="tw-text-gray-200" th:text="${player.nickname ?: 'Non spécifié'}">Surnom</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Informations de contact -->
+                            <div>
+                                <h3 class="tw-text-cyber-blue tw-font-orbitron tw-text-lg tw-mb-4 tw-border-b tw-border-cyber-blue/30 tw-pb-2">CONTACT</h3>
+                                
+                                <div class="tw-space-y-3">
+                                    <div class="tw-flex tw-items-center tw-space-x-2">
+                                        <div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-cyber-darker tw-flex tw-items-center tw-justify-center">
+                                            <i class="fas fa-envelope tw-text-cyber-blue"></i>
+                                        </div>
+                                        <div>
+                                            <p class="tw-text-xs tw-text-gray-400">Email</p>
+                                            <p class="tw-text-gray-200" th:text="${player.email}">email@example.com</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="tw-flex tw-items-center tw-space-x-2">
+                                        <div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-cyber-darker tw-flex tw-items-center tw-justify-center">
+                                            <i class="fas fa-calendar-alt tw-text-cyber-blue"></i>
+                                        </div>
+                                        <div>
+                                            <p class="tw-text-xs tw-text-gray-400">Date de naissance</p>
+                                            <p class="tw-text-gray-200" th:text="${player.dateOfBirth != null ? #temporals.format(player.dateOfBirth, 'dd/MM/yyyy') : 'Non spécifiée'}">01/01/1990</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Équipes du joueur -->
+                <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden">
+                    <div class="tw-bg-gradient-to-r tw-from-cyber-yellow tw-to-cyber-orange tw-p-4">
+                        <h2 class="tw-font-russo tw-text-xl tw-text-white">ÉQUIPES</h2>
+                    </div>
+                    <div class="tw-p-6">
+                        <div th:if="${#lists.isEmpty(player.teams)}" class="tw-bg-cyber-darker tw-rounded-lg tw-p-6 tw-border tw-border-cyber-yellow tw-text-center tw-text-gray-500">
+                            <i class="fas fa-users-slash tw-text-cyber-yellow tw-text-4xl tw-mb-4"></i>
+                            <p class="tw-text-xl">Ce joueur n'appartient à aucune équipe</p>
+                            <a href="/teams/new" class="tw-inline-block tw-mt-4 tw-bg-cyber-yellow tw-text-black tw-px-4 tw-py-2 tw-rounded tw-text-sm tw-transition tw-duration-300 hover:tw-bg-yellow-400">
+                                <i class="fas fa-plus-circle tw-mr-1"></i> Créer une équipe
+                            </a>
+                        </div>
+                        
+                        <div th:unless="${#lists.isEmpty(player.teams)}" class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-2 md:tw-grid-cols-3 tw-gap-4">
+                            <div th:each="team : ${player.teams}" class="tw-bg-cyber-darker tw-rounded-lg tw-p-4 tw-border tw-border-cyber-yellow tw-flex tw-flex-col tw-items-center tw-transition-all tw-duration-300 hover:tw-shadow-glow-yellow hover:tw-scale-105">
+                                <div class="tw-relative tw-w-16 tw-h-16 tw-rounded-lg tw-overflow-hidden tw-border-2 tw-border-cyber-yellow tw-mb-3">
+                                    <img th:if="${team.logoUrl}" th:src="${team.logoUrl}" class="tw-w-full tw-h-full tw-object-contain" th:alt="${team.name}">
+                                    <div th:unless="${team.logoUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
+                                        <i class="fas fa-users tw-text-cyber-yellow tw-text-2xl"></i>
+                                    </div>
+                                </div>
+                                <h4 class="tw-font-orbitron tw-text-lg tw-text-cyber-yellow tw-mb-1 tw-text-center" th:text="${team.name}">Nom de l'équipe</h4>
+                                
+                                <div th:if="${team.captain != null && team.captain.id == player.id}" class="tw-bg-cyber-yellow tw-text-black tw-px-2 tw-py-0.5 tw-rounded-full tw-text-xs tw-font-bold tw-mb-2">
+                                    <i class="fas fa-crown tw-mr-1"></i> CAPITAINE
+                                </div>
+                                
+                                <a th:href="@{/teams/{id}(id=${team.id})}" class="tw-bg-cyber-yellow tw-text-black tw-px-3 tw-py-1 tw-rounded tw-text-sm tw-transition tw-duration-300 tw-hover:tw-bg-yellow-400 tw-w-full tw-text-center tw-mt-2">
+                                    <i class="fas fa-eye tw-mr-1"></i> Voir l'équipe
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actions de navigation -->
+        <div class="tw-flex tw-justify-between tw-mt-8">
+            <a href="/players" class="neon-btn tw-bg-cyber-dark tw-text-cyber-blue tw-border tw-border-cyber-blue tw-px-6 tw-py-3 tw-rounded-md tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker tw-font-orbitron">
+                <i class="fas fa-arrow-left tw-mr-2"></i> RETOUR AUX JOUEURS
+            </a>
+            <a href="/teams" class="neon-btn tw-bg-cyber-purple tw-text-white tw-px-6 tw-py-3 tw-rounded-md tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-cyber-pink tw-font-orbitron">
+                <i class="fas fa-users tw-mr-2"></i> ÉQUIPES
+            </a>
+        </div>
+    </div>
+    
+    <!-- Pied de page avec style gaming -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    
+    <!-- Script pour la confirmation de suppression stylisée -->
+    <script>
+        function deletePlayer(playerId) {
+            // Animation de confirmation cyberpunk
+            Swal.fire({
+                title: 'SUPPRIMER LE JOUEUR ?',
+                text: 'Cette action est irréversible. Toutes les données du joueur seront effacées.',
+                icon: 'warning',
+                background: '#0a0a1a',
+                color: '#fff',
+                iconColor: '#ff0055',
+                showCancelButton: true,
+                confirmButtonColor: '#ff0055',
+                cancelButtonColor: '#0099ff',
+                confirmButtonText: 'SUPPRIMER',
+                cancelButtonText: 'ANNULER',
+                customClass: {
+                    popup: 'cyber-popup',
+                    title: 'cyber-title',
+                    confirmButton: 'cyber-confirm-btn',
+                    cancelButton: 'cyber-cancel-btn'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/players/' + playerId + '/delete';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
