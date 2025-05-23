@@ -20,13 +20,72 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Controller
 @RequestMapping("/tournaments")
 public class TournamentController {
+    
+    /**
+     * Helper method to create breadcrumb items for tournament pages
+     * @param currentPage The current page name
+     * @param tournament The tournament object (can be null for list and new pages)
+     * @return List of breadcrumb items with label and URL
+     */
+    private List<Map<String, String>> createBreadcrumbItems(String currentPage, Tournament tournament) {
+        List<Map<String, String>> items = new ArrayList<>();
+        
+        // Home item
+        Map<String, String> homeItem = new HashMap<>();
+        homeItem.put("label", "Accueil");
+        homeItem.put("url", "/");
+        items.add(homeItem);
+        
+        // Tournaments list item
+        Map<String, String> tournamentsItem = new HashMap<>();
+        tournamentsItem.put("label", "Tournois");
+        
+        // Only add URL if we're not on the tournaments list page
+        if (!"list".equals(currentPage)) {
+            tournamentsItem.put("url", "/tournaments");
+        } else {
+            tournamentsItem.put("url", null);
+        }
+        items.add(tournamentsItem);
+        
+        // Add tournament-specific items if applicable
+        if (tournament != null && tournament.getId() != null) {
+            Map<String, String> tournamentItem = new HashMap<>();
+            tournamentItem.put("label", tournament.getName());
+            
+            // If we're on the detail page, don't add URL
+            if (!"detail".equals(currentPage)) {
+                tournamentItem.put("url", "/tournaments/" + tournament.getId());
+            } else {
+                tournamentItem.put("url", null);
+            }
+            items.add(tournamentItem);
+        }
+        
+        // Add action item if needed (create/edit)
+        if ("form".equals(currentPage)) {
+            Map<String, String> actionItem = new HashMap<>();
+            if (tournament != null && tournament.getId() != null) {
+                actionItem.put("label", "Modifier");
+            } else {
+                actionItem.put("label", "Créer");
+            }
+            actionItem.put("url", null); // Current page, no URL
+            items.add(actionItem);
+        }
+        
+        return items;
+    }
 
     private final TournamentService tournamentService;
     private final UserService userService;
@@ -55,6 +114,9 @@ public class TournamentController {
         // Ajout de la liste des utilisateurs au modèle
         List<User> users = userService.findAll();
         model.addAttribute("users", users);
+        
+        // Ajout des éléments du fil d'Ariane
+        model.addAttribute("breadcrumbItems", createBreadcrumbItems("list", null));
         
         return "tournament/list";
     }
@@ -88,6 +150,10 @@ public class TournamentController {
         List<Game> games = gameService.findAll();
         model.addAttribute("users", users);
         model.addAttribute("games", games);
+        
+        // Ajout des éléments du fil d'Ariane
+        model.addAttribute("breadcrumbItems", createBreadcrumbItems("form", tournament));
+        
         return "tournament/form";
     }
 
@@ -292,6 +358,10 @@ public class TournamentController {
         Tournament tournament = tournamentService.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid tournament Id:" + id));
         model.addAttribute("tournament", tournament);
+        
+        // Ajout des éléments du fil d'Ariane
+        model.addAttribute("breadcrumbItems", createBreadcrumbItems("detail", tournament));
+        
         return "tournament/detail";
     }
 
@@ -315,6 +385,10 @@ public class TournamentController {
         List<Game> games = gameService.findAll();
         model.addAttribute("users", users);
         model.addAttribute("games", games);
+        
+        // Ajout des éléments du fil d'Ariane
+        model.addAttribute("breadcrumbItems", createBreadcrumbItems("form", tournament));
+        
         return "tournament/form";
     }
 

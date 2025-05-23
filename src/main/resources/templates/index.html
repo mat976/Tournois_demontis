@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head('Gestion de Tournois E-Sport')}"></head>
 <body class="cyber-bg tw-min-h-screen tw-text-white">
+    <!-- Fil d'Ariane (breadcrumb) -->
+    <div th:replace="~{fragments/breadcrumb :: breadcrumb(${breadcrumbItems})}"></div>
+    
     <!-- Section héro avec style gaming -->
     <div class="tw-relative tw-overflow-hidden tw-py-20 tw-mb-10 tw-bg-cyber-darker" style="background-image: url('https://wallpaperaccess.com/full/1462795.jpg'); background-size: cover; background-position: center;">
         <!-- Overlay avec effet de grille -->

@@ -1,84 +1,152 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title th:text="${team.id} != null ? 'Modifier l\'équipe' : 'Créer une équipe'">Créer une équipe</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/css/flatpickr.min.css}"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .logo-preview {
-            max-width: 200px;
-            margin: 1rem 0;
-        }
-        .form-control {
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="mb-0" th:text="${team.id} != null ? 'Modifier l\'équipe' : 'Créer une équipe'">Créer une équipe</h2>
+<head th:replace="~{fragments/head :: head(${team.id} != null ? 'Modifier l\'\u00e9quipe' : 'Cr\u00e9er une \u00e9quipe')}"></head>
+<body class="cyber-bg tw-min-h-screen tw-text-white">
+<!-- Fil d'Ariane (breadcrumb) -->
+<div th:replace="~{fragments/breadcrumb :: breadcrumb(${breadcrumbItems})}"></div>
+
+<!-- En-tête avec titre -->
+<div class="tw-relative tw-overflow-hidden tw-py-12 tw-mb-10 tw-bg-cyber-darker tw-grid-bg">
+    <div class="cyber-tear tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-h-10"></div>
+    <div class="container tw-relative tw-z-10 tw-text-center">
+        <h1 class="tw-font-orbitron tw-text-4xl tw-font-bold tw-mb-4">
+            <span th:if="${team.id == null}" class="tw-text-cyber-green">CRÉER UNE</span>
+            <span th:unless="${team.id == null}" class="tw-text-cyber-yellow">MODIFIER L'</span>
+            <span class="tw-text-cyber-blue">ÉQUIPE</span>
+        </h1>
+        <p class="tw-font-russo tw-text-xl tw-text-cyber-blue tw-mb-8 tw-opacity-80" th:text="${team.id == null ? 'Ajoutez une nouvelle escouade à votre roster' : 'Modifiez les informations de l\'escouade'}">Formulaire d'équipe</p>
+    </div>
+    <div class="cyber-tear tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-10"></div>
+</div>
+
+<div class="container tw-mb-16">
+    <!-- Formulaire d'équipe -->
+    <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-mb-10">
+        <div class="tw-bg-gradient-to-r tw-from-cyber-green tw-to-cyber-blue tw-p-4">
+            <h2 class="tw-font-russo tw-text-2xl tw-text-white" th:text="${team.id == null ? 'CRÉER UNE NOUVELLE ÉQUIPE' : 'MODIFIER L\'\u00c9QUIPE'}">FORMULAIRE D'ÉQUIPE</h2>
+        </div>
+        <div class="tw-p-6">
+            <form th:action="${team.id} != null ? @{'/teams/' + ${team.id} + '/edit'} : @{/teams/new}" th:object="${team}" method="post" enctype="multipart/form-data" class="tw-space-y-6">
+                <!-- Nom de l'équipe -->
+                <div class="tw-mb-6">
+                    <label for="name" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">NOM DE L'ÉQUIPE <span class="tw-text-cyber-red">*</span></label>
+                    <input type="text" th:field="*{name}" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                           id="name" required placeholder="Entrez le nom de l'équipe">
+                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="tw-text-cyber-red tw-text-sm tw-mt-1"></div>
                 </div>
-                <div class="card-body">
-                    <form th:action="${team.id} != null ? @{'/teams/' + ${team.id} + '/edit'} : @{/teams/new}" th:object="${team}" method="post" enctype="multipart/form-data">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Nom de l'équipe <span class="text-danger">*</span></label>
-                            <input type="text" th:field="*{name}" class="form-control" id="name" required>
-                            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea th:field="*{description}" class="form-control" id="description" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="captainId" class="form-label">Capitaine de l'équipe <span class="text-danger">*</span></label>
-                            <select name="captainId" class="form-control" id="captainId" required>
-                                <option value="">Sélectionnez le capitaine</option>
-                                <option th:each="player : ${allPlayers}" 
-                                        th:value="${player.id}" 
-                                        th:text="${player.nickname}"
-                                        th:selected="${team.captain != null && team.captain.id == player.id}">
-                                </option>
-                            </select>
-                            <div th:if="${#fields.hasErrors('captain')}" class="text-danger">Veuillez sélectionner un capitaine</div>
-                            <div th:if="${captainError != null}" class="text-danger" th:text="${captainError}"></div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="logo" class="form-label">Lien de l'image</label>
-                            <div class="input-group">
-                                <input type="url" th:field="*{logoUrl}" class="form-control" id="logo" placeholder="https://...">
-                                <button class="btn btn-outline-secondary" type="button" onclick="window.open('https://imgur.com/upload', '_blank')">
-                                    <i class="fab fa-imgur"></i> Imgur
-                                </button>
-                            </div>
-                            <div class="mt-2">
-                                <img th:if="${team.logoUrl}" th:src="${team.logoUrl}" class="logo-preview" alt="Logo de l'équipe">
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="players" class="form-label">Joueurs de l'équipe</label>
-                            <select multiple name="players" class="form-control" id="players" size="8">
-                                <option th:each="player : ${allPlayers}" 
-                                        th:value="${player.id}" 
-                                        th:text="${player.nickname}">
-                                </option>
-                            </select>
-                            <small class="form-text text-muted">Maintenez la touche Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs joueurs</small>
-                        </div>
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-primary">Valider</button>
-                            <a th:href="@{/teams}" class="btn btn-secondary">Annuler</a>
-                        </div>
-                    </form>
+                
+                <!-- Description -->
+                <div class="tw-mb-6">
+                    <label for="description" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">DESCRIPTION</label>
+                    <textarea th:field="*{description}" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                              id="description" rows="3" placeholder="Décrivez votre équipe"></textarea>
                 </div>
-            </div>
+                
+                <!-- Capitaine -->
+                <div class="tw-mb-6">
+                    <label for="captainId" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">CAPITAINE DE L'ÉQUIPE <span class="tw-text-cyber-red">*</span></label>
+                    <div class="tw-relative">
+                        <select name="captainId" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 tw-appearance-none focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                id="captainId" required>
+                            <option value="">Sélectionnez le capitaine</option>
+                            <option th:each="player : ${allPlayers}" 
+                                    th:value="${player.id}" 
+                                    th:text="${player.nickname}"
+                                    th:selected="${team.captain != null && team.captain.id == player.id}">
+                            </option>
+                        </select>
+                        <div class="tw-absolute tw-inset-y-0 tw-right-0 tw-flex tw-items-center tw-px-2 tw-pointer-events-none">
+                            <i class="fas fa-chevron-down tw-text-cyber-blue"></i>
+                        </div>
+                    </div>
+                    <div th:if="${#fields.hasErrors('captain')}" class="tw-text-cyber-red tw-text-sm tw-mt-1">Veuillez sélectionner un capitaine</div>
+                    <div th:if="${captainError != null}" class="tw-text-cyber-red tw-text-sm tw-mt-1" th:text="${captainError}"></div>
+                </div>
+                
+                <!-- Logo URL -->
+                <div class="tw-mb-6">
+                    <label for="logo" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">LOGO DE L'ÉQUIPE</label>
+                    <div class="tw-flex">
+                        <input type="url" th:field="*{logoUrl}" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-l-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                               id="logo" placeholder="https://...">
+                        <button type="button" onclick="window.open('https://imgur.com/upload', '_blank')" 
+                                class="tw-bg-cyber-darker tw-border tw-border-l-0 tw-border-cyber-blue tw-text-cyber-blue tw-px-3 tw-rounded-r-md hover:tw-bg-cyber-blue hover:tw-text-black tw-transition-colors">
+                            <i class="fab fa-imgur"></i>
+                        </button>
+                    </div>
+                    <div class="tw-mt-4" th:if="${team.logoUrl}">
+                        <div class="tw-relative tw-w-32 tw-h-32 tw-rounded-lg tw-overflow-hidden tw-border-2 tw-border-cyber-blue tw-bg-cyber-darker">
+                            <img th:src="${team.logoUrl}" class="tw-w-full tw-h-full tw-object-contain" alt="Logo de l'équipe">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Joueurs -->
+                <div class="tw-mb-6">
+                    <label for="players" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">JOUEURS DE L'ÉQUIPE</label>
+                    <div class="tw-relative">
+                        <select multiple name="players" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                id="players" size="8">
+                            <option th:each="player : ${allPlayers}" 
+                                    th:value="${player.id}" 
+                                    th:text="${player.nickname}"
+                                    th:selected="${team.players != null && team.players.contains(player)}">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="tw-flex tw-items-center tw-mt-2 tw-text-gray-400 tw-text-sm">
+                        <i class="fas fa-info-circle tw-mr-2 tw-text-cyber-blue"></i>
+                        <span>Maintenez la touche Ctrl (ou Cmd sur Mac) pour sélectionner plusieurs joueurs</span>
+                    </div>
+                </div>
+                
+                <!-- Boutons d'action -->
+                <div class="tw-flex tw-justify-between tw-mt-8">
+                    <a th:href="@{/teams}" class="neon-btn tw-bg-cyber-dark tw-text-cyber-blue tw-border tw-border-cyber-blue tw-px-6 tw-py-3 tw-rounded-md tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker tw-font-orbitron">
+                        <i class="fas fa-arrow-left tw-mr-2"></i> ANNULER
+                    </a>
+                    <button type="submit" class="neon-btn tw-bg-cyber-green tw-text-black tw-px-6 tw-py-3 tw-rounded-md tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-green-400 tw-font-orbitron">
+                        <i class="fas fa-save tw-mr-2"></i> VALIDER
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
-</div>
+    
+    <!-- Pied de page avec style gaming -->
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Prévisualisation de l'image
+        document.addEventListener('DOMContentLoaded', function() {
+            const logoInput = document.getElementById('logo');
+            logoInput.addEventListener('input', function() {
+                const previewContainer = document.querySelector('.tw-mt-4');
+                if (!previewContainer) return;
+                
+                if (this.value) {
+                    if (!previewContainer.querySelector('img')) {
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'tw-relative tw-w-32 tw-h-32 tw-rounded-lg tw-overflow-hidden tw-border-2 tw-border-cyber-blue tw-bg-cyber-darker';
+                        
+                        const img = document.createElement('img');
+                        img.className = 'tw-w-full tw-h-full tw-object-contain';
+                        img.alt = 'Logo de l\'équipe';
+                        img.src = this.value;
+                        
+                        previewDiv.appendChild(img);
+                        previewContainer.innerHTML = '';
+                        previewContainer.appendChild(previewDiv);
+                    } else {
+                        previewContainer.querySelector('img').src = this.value;
+                    }
+                    previewContainer.style.display = 'block';
+                } else {
+                    previewContainer.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

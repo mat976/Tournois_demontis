@@ -1,102 +1,206 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/head :: head(${player.id} != null ? 'Modifier le joueur' : 'Créer un joueur')}"></head>
-<body class="bg-light">
-    <div class="container mt-5">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Accueil</a></li>
-                <li class="breadcrumb-item"><a href="/players">Joueurs</a></li>
-                <li class="breadcrumb-item active" aria-current="page" th:text="${player.id == null ? 'Créer' : 'Modifier'}">Action</li>
-            </ol>
-        </nav>
-
-        <div class="card shadow-sm">
-            <div class="card-header bg-success text-white">
-                <h2 th:text="${player.id == null ? 'Créer un nouveau joueur' : 'Modifier le joueur'}">Formulaire de joueur</h2>
+<body class="cyber-bg tw-min-h-screen tw-text-white">
+    <!-- Fil d'Ariane (breadcrumb) -->
+    <div th:replace="~{fragments/breadcrumb :: breadcrumb(${breadcrumbItems})}"></div>
+    
+    <!-- En-tête avec titre -->
+    <div class="tw-relative tw-overflow-hidden tw-py-12 tw-mb-10 tw-bg-cyber-darker tw-grid-bg">
+        <div class="cyber-tear tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-h-10"></div>
+        <div class="container tw-relative tw-z-10 tw-text-center">
+            <h1 class="tw-font-orbitron tw-text-4xl tw-font-bold tw-mb-4">
+                <span th:if="${player.id == null}" class="tw-text-cyber-green">CRÉER UN</span>
+                <span th:unless="${player.id == null}" class="tw-text-cyber-yellow">MODIFIER LE</span>
+                <span class="tw-text-cyber-blue">JOUEUR</span>
+            </h1>
+            <p class="tw-font-russo tw-text-xl tw-text-cyber-blue tw-mb-8 tw-opacity-80" th:text="${player.id == null ? 'Ajoutez un nouveau joueur à votre roster' : 'Modifiez les informations du joueur'}">Formulaire de joueur</p>
+        </div>
+        <div class="cyber-tear tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-10"></div>
+    </div>
+    
+    <div class="container tw-mb-16">
+        <!-- Formulaire de joueur -->
+        <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-mb-10">
+            <div class="tw-bg-gradient-to-r tw-from-cyber-green tw-to-cyber-blue tw-p-4">
+                <h2 class="tw-font-russo tw-text-2xl tw-text-white" th:text="${player.id == null ? 'CRÉER UN NOUVEAU JOUEUR' : 'MODIFIER LE JOUEUR'}">FORMULAIRE DE JOUEUR</h2>
             </div>
-            <div class="card-body">
+            <div class="tw-p-6">
                 <form th:action="@{${player.id == null ? '/players' : '/players/' + player.id}}" 
-                      th:object="${player}" method="post" class="needs-validation" novalidate>
+                      th:object="${player}" method="post" class="tw-space-y-6" novalidate>
                     
                     <input type="hidden" th:if="*{id != null}" th:field="*{id}" />
                     
                     <!-- Informations de base -->
-                    <h4 class="mb-3">Informations d'utilisateur</h4>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="username" class="form-label">Nom d'utilisateur*</label>
-                            <input type="text" class="form-control" id="username" th:field="*{username}" required>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
-                                Veuillez entrer un nom d'utilisateur valide.
+                    <div class="tw-mb-6">
+                        <h3 class="tw-text-cyber-green tw-font-orbitron tw-text-xl tw-mb-4 tw-border-b tw-border-cyber-green/30 tw-pb-2">INFORMATIONS D'UTILISATEUR</h3>
+                        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
+                            <div>
+                                <label for="username" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">NOM D'UTILISATEUR*</label>
+                                <input type="text" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                       id="username" th:field="*{username}" required>
+                                <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">
+                                    Veuillez entrer un nom d'utilisateur valide.
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="email" class="form-label">Email*</label>
-                            <input type="email" class="form-control" id="email" th:field="*{email}" required>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
-                                Veuillez entrer un email valide.
+                            
+                            <div>
+                                <label for="email" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">EMAIL*</label>
+                                <input type="email" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                       id="email" th:field="*{email}" required>
+                                <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                                    Veuillez entrer un email valide.
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="password" class="form-label">Mot de passe*</label>
-                            <input type="password" class="form-control" id="password" th:field="*{password}" required>
-                            <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
-                                Le mot de passe doit contenir au moins 8 caractères.
+                            
+                            <div>
+                                <label for="password" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">MOT DE PASSE*</label>
+                                <input type="password" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                       id="password" th:field="*{password}" required>
+                                <div class="tw-text-cyber-red tw-text-sm tw-mt-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                                    Le mot de passe doit contenir au moins 8 caractères.
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="nickname" class="form-label">Surnom (Pseudo)</label>
-                            <input type="text" class="form-control" id="nickname" th:field="*{nickname}">
+                            
+                            <div>
+                                <label for="nickname" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">SURNOM (PSEUDO)</label>
+                                <input type="text" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                       id="nickname" th:field="*{nickname}">
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Informations personnelles -->
-                    <h4 class="mb-3 mt-4">Informations personnelles</h4>
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="firstName" class="form-label">Prénom</label>
-                            <input type="text" class="form-control" id="firstName" th:field="*{firstName}">
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="lastName" class="form-label">Nom</label>
-                            <input type="text" class="form-control" id="lastName" th:field="*{lastName}">
-                        </div>
-                    </div>
-                    
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="dateOfBirth" class="form-label">Date de naissance</label>
-                            <input type="text" class="form-control date-picker" id="dateOfBirth" th:field="*{dateOfBirth}" placeholder="JJ/MM/AAAA">
-                        </div>
-                        
-                        <div class="col-md-6">
-                            <label for="profilePictureUrl" class="form-label">URL de la photo de profil</label>
-                            <input type="url" class="form-control" id="profilePictureUrl" th:field="*{profilePictureUrl}">
+                    <div class="tw-mb-6">
+                        <h3 class="tw-text-cyber-green tw-font-orbitron tw-text-xl tw-mb-4 tw-border-b tw-border-cyber-green/30 tw-pb-2">INFORMATIONS PERSONNELLES</h3>
+                        <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
+                            <div>
+                                <label for="firstName" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">PRÉNOM</label>
+                                <input type="text" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                       id="firstName" th:field="*{firstName}">
+                            </div>
+                            
+                            <div>
+                                <label for="lastName" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">NOM</label>
+                                <input type="text" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                       id="lastName" th:field="*{lastName}">
+                            </div>
+                            
+                            <div>
+                                <label for="dateOfBirth" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">DATE DE NAISSANCE</label>
+                                <input type="text" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue date-picker" 
+                                       id="dateOfBirth" th:field="*{dateOfBirth}" placeholder="JJ/MM/AAAA">
+                            </div>
+                            
+                            <div>
+                                <label for="profilePictureUrl" class="tw-block tw-text-cyber-blue tw-font-orbitron tw-text-sm tw-mb-2">URL DE LA PHOTO DE PROFIL</label>
+                                <div class="tw-flex">
+                                    <input type="url" class="tw-w-full tw-bg-cyber-darker tw-text-white tw-border tw-border-cyber-blue tw-rounded-l-md tw-p-3 focus:tw-ring-cyber-blue focus:tw-border-cyber-blue" 
+                                           id="profilePictureUrl" th:field="*{profilePictureUrl}" placeholder="https://...">
+                                    <button type="button" onclick="window.open('https://imgur.com/upload', '_blank')" 
+                                            class="tw-bg-cyber-darker tw-border tw-border-l-0 tw-border-cyber-blue tw-text-cyber-blue tw-px-3 tw-rounded-r-md hover:tw-bg-cyber-blue hover:tw-text-black tw-transition-colors">
+                                        <i class="fab fa-imgur"></i>
+                                    </button>
+                                </div>
+                                <div class="tw-mt-2" th:if="*{profilePictureUrl != null && !profilePictureUrl.isEmpty()}">
+                                    <img th:src="*{profilePictureUrl}" class="tw-max-w-[100px] tw-max-h-[100px] tw-rounded-md tw-border tw-border-cyber-blue" alt="Photo de profil">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
                     <!-- Options -->
-                    <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" type="checkbox" id="isActive" th:field="*{active}">
-                        <label class="form-check-label" for="isActive">Compte actif</label>
+                    <div class="tw-mb-6">
+                        <label class="tw-flex tw-items-center tw-cursor-pointer tw-space-x-3">
+                            <div class="tw-relative">
+                                <input type="checkbox" id="isActive" th:field="*{active}" class="tw-sr-only">
+                                <div class="tw-block tw-bg-cyber-darker tw-w-14 tw-h-8 tw-rounded-full tw-border tw-border-cyber-blue"></div>
+                                <div class="tw-dot tw-absolute tw-left-1 tw-top-1 tw-bg-cyber-blue tw-w-6 tw-h-6 tw-rounded-full tw-transition"></div>
+                            </div>
+                            <span class="tw-text-cyber-blue tw-font-orbitron tw-text-sm">COMPTE ACTIF</span>
+                        </label>
                     </div>
                     
-                    <div class="d-flex justify-content-between mt-4">
-                        <a th:href="@{/players}" class="btn btn-secondary">Annuler</a>
-                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                    <!-- Boutons d'action -->
+                    <div class="tw-flex tw-justify-between tw-mt-8">
+                        <a th:href="@{/players}" class="neon-btn tw-bg-cyber-dark tw-text-cyber-blue tw-border tw-border-cyber-blue tw-px-6 tw-py-3 tw-rounded-md tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker tw-font-orbitron">
+                            <i class="fas fa-arrow-left tw-mr-2"></i> ANNULER
+                        </a>
+                        <button type="submit" class="neon-btn tw-bg-cyber-green tw-text-black tw-px-6 tw-py-3 tw-rounded-md tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-green-400 tw-font-orbitron">
+                            <i class="fas fa-save tw-mr-2"></i> ENREGISTRER
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
     
+    <!-- Pied de page avec style gaming -->
     <div th:replace="~{fragments/footer :: footer}"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        // Validation du formulaire
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelectorAll('form');
+            Array.from(forms).forEach(function(form) {
+                form.addEventListener('submit', function(event) {
+                    const requiredFields = form.querySelectorAll('[required]');
+                    let isValid = true;
+                    
+                    requiredFields.forEach(field => {
+                        if (!field.value.trim()) {
+                            isValid = false;
+                            field.classList.add('tw-border-cyber-red');
+                        } else {
+                            field.classList.remove('tw-border-cyber-red');
+                        }
+                    });
+                    
+                    if (!isValid) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        // Animation d'erreur
+                        document.querySelector('.neon-border').classList.add('error-shake');
+                        setTimeout(() => {
+                            document.querySelector('.neon-border').classList.remove('error-shake');
+                        }, 500);
+                    }
+                });
+            });
+        });
+        
+        // Initialisation du date picker avec thème sombre
+        flatpickr(".date-picker", {
+            dateFormat: "d/m/Y",
+            allowInput: true,
+            theme: "dark"
+        });
+        
+        // Animation du toggle switch
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggles = document.querySelectorAll('input[type="checkbox"]');
+            toggles.forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    const dot = this.parentNode.querySelector('.tw-dot');
+                    if (this.checked) {
+                        dot.style.transform = 'translateX(100%)';
+                        dot.style.backgroundColor = '#0f0';
+                    } else {
+                        dot.style.transform = 'translateX(0)';
+                        dot.style.backgroundColor = '';
+                    }
+                });
+                
+                // Initialiser l'état du toggle au chargement
+                const dot = toggle.parentNode.querySelector('.tw-dot');
+                if (toggle.checked) {
+                    dot.style.transform = 'translateX(100%)';
+                    dot.style.backgroundColor = '#0f0';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

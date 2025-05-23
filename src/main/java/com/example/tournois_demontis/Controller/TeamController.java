@@ -13,13 +13,73 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 @Controller
 @RequestMapping("/teams")
 public class TeamController {
+    
+    /**
+     * Helper method to create breadcrumb items for team pages
+     * @param currentPage The current page name
+     * @param team The team object (can be null for list and new pages)
+     * @return List of breadcrumb items with label and URL
+     */
+    private List<Map<String, String>> createBreadcrumbItems(String currentPage, Team team) {
+        List<Map<String, String>> items = new ArrayList<>();
+        
+        // Home item
+        Map<String, String> homeItem = new HashMap<>();
+        homeItem.put("label", "Accueil");
+        homeItem.put("url", "/");
+        items.add(homeItem);
+        
+        // Teams list item
+        Map<String, String> teamsItem = new HashMap<>();
+        teamsItem.put("label", "Équipes");
+        
+        // Only add URL if we're not on the teams list page
+        if (!"list".equals(currentPage)) {
+            teamsItem.put("url", "/teams");
+        } else {
+            teamsItem.put("url", null);
+        }
+        items.add(teamsItem);
+        
+        // Add team-specific items if applicable
+        if (team != null && team.getId() != null) {
+            Map<String, String> teamItem = new HashMap<>();
+            teamItem.put("label", team.getName());
+            
+            // If we're on the detail page, don't add URL
+            if (!"detail".equals(currentPage)) {
+                teamItem.put("url", "/teams/" + team.getId());
+            } else {
+                teamItem.put("url", null);
+            }
+            items.add(teamItem);
+        }
+        
+        // Add action item if needed (create/edit)
+        if ("form".equals(currentPage)) {
+            Map<String, String> actionItem = new HashMap<>();
+            if (team != null && team.getId() != null) {
+                actionItem.put("label", "Modifier");
+            } else {
+                actionItem.put("label", "Créer");
+            }
+            actionItem.put("url", null); // Current page, no URL
+            items.add(actionItem);
+        }
+        
+        return items;
+    }
     @Autowired
     private TeamService teamService;
     
@@ -32,6 +92,10 @@ public class TeamController {
     @GetMapping
     public String listTeams(Model model) {
         model.addAttribute("teams", teamService.findAll());
+        
+        // Ajout des éléments du fil d'Ariane
+        model.addAttribute("breadcrumbItems", createBreadcrumbItems("list", null));
+        
         return "team/list";
     }
 
@@ -52,6 +116,9 @@ public class TeamController {
             }
             return t.getPlayers().stream().anyMatch(p -> p.getId().equals(playerId));
         });
+        
+        // Ajout des éléments du fil d'Ariane
+        model.addAttribute("breadcrumbItems", createBreadcrumbItems("form", team));
         
         return "team/form";
     }

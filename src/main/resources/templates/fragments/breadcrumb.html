@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Fragment de fil d'Ariane (breadcrumb) -->
+    <div th:fragment="breadcrumb(items)" class="tw-bg-cyber-darker tw-border-b tw-border-cyber-blue/30 tw-py-2 tw-mb-6">
+        <div class="container">
+            <nav class="tw-flex tw-items-center tw-text-sm tw-font-orbitron">
+                <a href="/" class="tw-text-cyber-blue hover:tw-text-cyber-pink tw-transition-colors">
+                    <i class="fas fa-home"></i>
+                </a>
+                
+                <th:block th:each="item, status : ${items}">
+                    <span class="tw-mx-2 tw-text-gray-500">
+                        <i class="fas fa-angle-right"></i>
+                    </span>
+                    
+                    <a th:if="${!status.last && item.url != null}" 
+                       th:href="${item.url}" 
+                       class="tw-text-cyber-blue hover:tw-text-cyber-pink tw-transition-colors"
+                       th:text="${item.label}">Élément</a>
+                       
+                    <span th:if="${status.last || item.url == null}" 
+                          class="tw-text-cyber-pink"
+                          th:text="${item.label}">Élément actif</span>
+                </th:block>
+            </nav>
+        </div>
+    </div>
+</body>
+</html>

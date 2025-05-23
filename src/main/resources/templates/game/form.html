@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="fr">
 <head th:replace="~{fragments/head :: head(${game.id == null ? 'Créer un jeu' : 'Modifier le jeu'})}"></head>
 <body class="cyber-bg tw-min-h-screen tw-text-white">
+    <!-- Fil d'Ariane (breadcrumb) -->
+    <div th:replace="~{fragments/breadcrumb :: breadcrumb(${breadcrumbItems})}"></div>
+    
     <!-- En-tête avec titre -->
     <div class="tw-relative tw-overflow-hidden tw-py-12 tw-mb-10 tw-bg-cyber-darker tw-grid-bg">
         <div class="cyber-tear tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-h-10"></div>

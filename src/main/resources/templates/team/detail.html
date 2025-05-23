@@ -1,122 +1,172 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Détails de l'équipe</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .team-detail {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        .team-logo {
-            width: 200px;
-            height: 200px;
-            object-fit: contain;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .player-badge {
-            margin-right: 8px;
-            margin-bottom: 8px;
-            padding: 8px 12px;
-            border-radius: 20px;
-        }
-        .player-badge img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-        .player-badge span {
-            vertical-align: middle;
-        }
-        .team-info {
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .team-info h4 {
-            margin-bottom: 15px;
-            color: #0d6efd;
-        }
-        .team-info p {
-            line-height: 1.6;
-            color: #6c757d;
-        }
-        .team-members {
-            margin-top: 20px;
-        }
-        .team-members h4 {
-            margin-bottom: 15px;
-            color: #0d6efd;
-        }
-    </style>
-</head>
-<body>
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card team-detail">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">Détails de l'équipe</h2>
-                    <div>
-                        <a th:href="@{'/teams/' + ${team.id} + '/edit'}" class="btn btn-warning btn-sm">
-                            <i class="fas fa-pencil"></i> Modifier
-                        </a>
-                        <button class="btn btn-danger btn-sm" onclick="deleteTeam(${team.id})">
-                            <i class="fas fa-trash"></i> Supprimer
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <img th:src="${team.logoUrl}" th:alt="${team.name}" class="team-logo">
-                        <h3 th:text="${team.name}" class="mb-2">Nom de l'équipe</h3>
-                        <p class="text-muted small" th:text="${#temporals.format(team.creationDate, 'dd/MM/yyyy HH:mm')}">Date de création</p>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <div class="team-info">
-                                <h4>Informations</h4>
-                                <p th:text="${team.description}" class="mb-0"></p>
-                            </div>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <div class="team-info">
-                                <h4>Capitaine</h4>
-                                <div class="d-flex align-items-center">
-                                    <img th:src="${team.captain.profilePictureUrl}" th:alt="${team.captain.nickname}" class="rounded-circle" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px;">
-                                    <span th:text="${team.captain.nickname}" class="h5 mb-0"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+<head th:replace="~{fragments/head :: head('Détails de l\'équipe')}"></head>
+<body class="cyber-bg tw-min-h-screen tw-text-white">
+<!-- Fil d'Ariane (breadcrumb) -->
+<div th:replace="~{fragments/breadcrumb :: breadcrumb(${breadcrumbItems})}"></div>
 
-                    <div class="team-members">
-                        <h4>Membres de l'équipe</h4>
-                        <div class="d-flex flex-wrap justify-content-center">
-                            <span th:each="player : ${team.players}" class="badge bg-primary player-badge">
-                                <img th:src="${player.profilePictureUrl}" th:alt="${player.nickname}" class="rounded-circle">
-                                <span th:text="${player.nickname}" class="text-white"></span>
+<!-- En-tête avec titre -->
+<div class="tw-relative tw-overflow-hidden tw-py-12 tw-mb-10 tw-bg-cyber-darker tw-grid-bg">
+    <div class="cyber-tear tw-absolute tw-top-0 tw-left-0 tw-right-0 tw-h-10"></div>
+    <div class="container tw-relative tw-z-10 tw-text-center">
+        <h1 class="tw-font-orbitron tw-text-4xl tw-font-bold tw-mb-4">
+            <span class="tw-text-cyber-green">DÉTAILS DE</span>
+            <span class="tw-text-cyber-blue">L'ÉQUIPE</span>
+        </h1>
+        <p class="tw-font-russo tw-text-xl tw-text-cyber-blue tw-mb-8 tw-opacity-80" th:text="${team.name}">Nom de l'équipe</p>
+    </div>
+    <div class="cyber-tear tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-h-10"></div>
+</div>
+
+<div class="container tw-mb-16">
+    <!-- Carte de détail de l'équipe -->
+    <div class="neon-border tw-bg-cyber-dark tw-rounded-md tw-overflow-hidden tw-mb-10">
+        <div class="tw-bg-gradient-to-r tw-from-cyber-green tw-to-cyber-blue tw-p-4 tw-flex tw-justify-between tw-items-center">
+            <h2 class="tw-font-russo tw-text-2xl tw-text-white">PROFIL DE L'ÉQUIPE</h2>
+            <div class="tw-flex tw-space-x-2">
+                <a th:href="@{'/teams/' + ${team.id} + '/edit'}" class="tw-bg-cyber-yellow tw-text-black tw-px-3 tw-py-1 tw-rounded tw-text-sm tw-transition tw-duration-300 tw-hover:tw-bg-yellow-400 tw-font-orbitron">
+                    <i class="fas fa-edit tw-mr-1"></i> MODIFIER
+                </a>
+                <button th:attr="onclick='deleteTeam(' + ${team.id} + ')'" class="tw-bg-cyber-red tw-text-white tw-px-3 tw-py-1 tw-rounded tw-text-sm tw-transition tw-duration-300 tw-hover:tw-bg-red-600 tw-font-orbitron">
+                    <i class="fas fa-trash tw-mr-1"></i> SUPPRIMER
+                </button>
+            </div>
+        </div>
+        <div class="tw-p-6">
+            <!-- En-tête de l'équipe avec logo et nom -->
+            <div class="tw-flex tw-flex-col md:tw-flex-row tw-items-center tw-gap-8 tw-mb-10">
+                <div class="tw-relative tw-w-48 tw-h-48 tw-rounded-lg tw-overflow-hidden tw-border-4 tw-border-cyber-blue tw-bg-cyber-darker tw-flex tw-items-center tw-justify-center tw-shadow-glow-blue">
+                    <img th:if="${team.logoUrl}" th:src="${team.logoUrl}" th:alt="${team.name}" class="tw-w-full tw-h-full tw-object-contain">
+                    <div th:unless="${team.logoUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
+                        <i class="fas fa-users tw-text-cyber-blue tw-text-6xl"></i>
+                    </div>
+                    <div class="tw-absolute tw-bottom-0 tw-left-0 tw-right-0 tw-bg-gradient-to-t tw-from-cyber-dark tw-to-transparent tw-h-1/3"></div>
+                </div>
+                
+                <div class="tw-flex-1 tw-text-center md:tw-text-left">
+                    <h3 class="tw-font-orbitron tw-text-3xl tw-text-cyber-blue tw-mb-2" th:text="${team.name}">Nom de l'équipe</h3>
+                    <div class="tw-flex tw-flex-wrap tw-gap-4 tw-mb-4 tw-justify-center md:tw-justify-start">
+                        <div class="tw-bg-cyber-darker tw-px-4 tw-py-2 tw-rounded-md tw-border tw-border-cyber-green tw-text-cyber-green">
+                            <i class="fas fa-calendar-alt tw-mr-2"></i>
+                            <span th:text="${#temporals.format(team.creationDate, 'dd/MM/yyyy HH:mm')}">Date de création</span>
+                        </div>
+                        <div class="tw-bg-cyber-darker tw-px-4 tw-py-2 tw-rounded-md tw-border tw-border-cyber-yellow tw-text-cyber-yellow">
+                            <i class="fas fa-users tw-mr-2"></i>
+                            <span th:text="${#lists.size(team.players)} + ' joueurs'">Nombre de joueurs</span>
+                        </div>
+                    </div>
+                    <p th:if="${team.description}" class="tw-text-gray-300 tw-italic tw-bg-cyber-darker tw-p-4 tw-rounded-md tw-border-l-4 tw-border-cyber-blue" th:text="${team.description}">Description de l'équipe</p>
+                    <p th:unless="${team.description}" class="tw-text-gray-500 tw-italic tw-bg-cyber-darker tw-p-4 tw-rounded-md tw-border-l-4 tw-border-cyber-blue">Aucune description disponible</p>
+                </div>
+            </div>
+            
+            <!-- Section Capitaine -->
+            <div class="tw-mb-10">
+                <h4 class="tw-text-cyber-yellow tw-font-orbitron tw-text-xl tw-mb-4 tw-border-b tw-border-cyber-yellow/30 tw-pb-2">CAPITAINE DE L'ÉQUIPE</h4>
+                <div th:if="${team.captain}" class="tw-bg-cyber-darker tw-rounded-lg tw-p-6 tw-border tw-border-cyber-yellow tw-flex tw-flex-col sm:tw-flex-row tw-items-center tw-gap-6">
+                    <div class="tw-relative tw-w-24 tw-h-24 tw-rounded-full tw-overflow-hidden tw-border-2 tw-border-cyber-yellow tw-shadow-glow-yellow">
+                        <img th:if="${team.captain.profilePictureUrl}" th:src="${team.captain.profilePictureUrl}" th:alt="${team.captain.nickname}" class="tw-w-full tw-h-full tw-object-cover">
+                        <div th:unless="${team.captain.profilePictureUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
+                            <i class="fas fa-user tw-text-cyber-yellow tw-text-4xl"></i>
+                        </div>
+                    </div>
+                    <div class="tw-flex-1 tw-text-center sm:tw-text-left">
+                        <h5 class="tw-font-orbitron tw-text-2xl tw-text-cyber-yellow tw-mb-2" th:text="${team.captain.nickname}">Pseudo du capitaine</h5>
+                        <p class="tw-text-gray-300 tw-mb-1" th:if="${team.captain.fullName}" th:text="${team.captain.fullName}">Nom complet</p>
+                        <div class="tw-flex tw-flex-wrap tw-gap-2 tw-justify-center sm:tw-justify-start">
+                            <span class="tw-bg-cyber-dark tw-px-3 tw-py-1 tw-rounded tw-text-sm tw-text-cyber-blue">
+                                <i class="fas fa-envelope tw-mr-1"></i>
+                                <span th:text="${team.captain.email}">Email</span>
+                            </span>
+                            <span th:if="${team.captain.active}" class="tw-bg-cyber-green tw-text-black tw-px-3 tw-py-1 tw-rounded tw-text-sm">
+                                <i class="fas fa-check-circle tw-mr-1"></i> ACTIF
+                            </span>
+                            <span th:unless="${team.captain.active}" class="tw-bg-cyber-red tw-text-white tw-px-3 tw-py-1 tw-rounded tw-text-sm">
+                                <i class="fas fa-times-circle tw-mr-1"></i> INACTIF
                             </span>
                         </div>
                     </div>
                 </div>
+                <div th:unless="${team.captain}" class="tw-bg-cyber-darker tw-rounded-lg tw-p-6 tw-border tw-border-cyber-yellow tw-text-center tw-text-gray-500">
+                    <i class="fas fa-exclamation-triangle tw-text-cyber-yellow tw-text-4xl tw-mb-4"></i>
+                    <p class="tw-text-xl">Aucun capitaine désigné pour cette équipe</p>
+                </div>
+            </div>
+
+            <!-- Section Membres de l'équipe -->
+            <div>
+                <h4 class="tw-text-cyber-blue tw-font-orbitron tw-text-xl tw-mb-4 tw-border-b tw-border-cyber-blue/30 tw-pb-2">MEMBRES DE L'ÉQUIPE</h4>
+                <div th:if="${!#lists.isEmpty(team.players)}" class="tw-grid tw-grid-cols-1 sm:tw-grid-cols-2 md:tw-grid-cols-3 lg:tw-grid-cols-4 tw-gap-4">
+                    <div th:each="player : ${team.players}" class="tw-bg-cyber-darker tw-rounded-lg tw-p-4 tw-border tw-border-cyber-blue tw-flex tw-flex-col tw-items-center tw-transition-all tw-duration-300 hover:tw-shadow-glow-blue hover:tw-scale-105">
+                        <div class="tw-relative tw-w-16 tw-h-16 tw-rounded-full tw-overflow-hidden tw-border-2 tw-border-cyber-blue tw-mb-3">
+                            <img th:if="${player.profilePictureUrl}" th:src="${player.profilePictureUrl}" th:alt="${player.nickname}" class="tw-w-full tw-h-full tw-object-cover">
+                            <div th:unless="${player.profilePictureUrl}" class="tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-bg-cyber-darker">
+                                <i class="fas fa-user tw-text-cyber-blue tw-text-2xl"></i>
+                            </div>
+                        </div>
+                        <h6 class="tw-font-orbitron tw-text-lg tw-text-cyber-blue tw-mb-1" th:text="${player.nickname}">Pseudo du joueur</h6>
+                        <p class="tw-text-gray-400 tw-text-sm tw-mb-2" th:if="${player.fullName}" th:text="${player.fullName}">Nom complet</p>
+                        <div class="tw-flex tw-space-x-2">
+                            <span th:if="${player.active}" class="tw-bg-cyber-green tw-text-black tw-px-2 tw-py-0.5 tw-rounded tw-text-xs">
+                                ACTIF
+                            </span>
+                            <span th:unless="${player.active}" class="tw-bg-cyber-red tw-text-white tw-px-2 tw-py-0.5 tw-rounded tw-text-xs">
+                                INACTIF
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${#lists.isEmpty(team.players)}" class="tw-bg-cyber-darker tw-rounded-lg tw-p-6 tw-border tw-border-cyber-blue tw-text-center tw-text-gray-500">
+                    <i class="fas fa-users-slash tw-text-cyber-blue tw-text-4xl tw-mb-4"></i>
+                    <p class="tw-text-xl">Aucun joueur dans cette équipe</p>
+                    <a th:href="@{'/teams/' + ${team.id} + '/edit'}" class="tw-inline-block tw-mt-4 tw-bg-cyber-blue tw-text-white tw-px-4 tw-py-2 tw-rounded tw-text-sm tw-transition tw-duration-300 hover:tw-bg-blue-600">
+                        <i class="fas fa-plus-circle tw-mr-1"></i> Ajouter des joueurs
+                    </a>
+                </div>
             </div>
         </div>
     </div>
+    
+    <!-- Actions de navigation -->
+    <div class="tw-flex tw-justify-between tw-mt-8">
+        <a href="/teams" class="neon-btn tw-bg-cyber-dark tw-text-cyber-blue tw-border tw-border-cyber-blue tw-px-6 tw-py-3 tw-rounded-md tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-cyber-darker tw-font-orbitron">
+            <i class="fas fa-arrow-left tw-mr-2"></i> RETOUR AUX ÉQUIPES
+        </a>
+        <a href="/tournaments" class="neon-btn tw-bg-cyber-purple tw-text-white tw-px-6 tw-py-3 tw-rounded-md tw-font-medium tw-transition tw-duration-300 tw-hover:tw-bg-cyber-pink tw-font-orbitron">
+            <i class="fas fa-trophy tw-mr-2"></i> TOURNOIS
+        </a>
+    </div>
 </div>
+
+<!-- Pied de page avec style gaming -->
+<div th:replace="~{fragments/footer :: footer}"></div>
 
 <script>
     function deleteTeam(teamId) {
-        if (confirm('Êtes-vous sûr de vouloir supprimer cette équipe ?')) {
-            window.location.href = '/teams/' + teamId + '/delete';
-        }
+        // Animation de confirmation cyberpunk
+        Swal.fire({
+            title: 'SUPPRIMER L\'ÉQUIPE ?',
+            text: 'Cette action est irréversible. Toutes les données de l\'équipe seront effacées.',
+            icon: 'warning',
+            background: '#0a0a1a',
+            color: '#fff',
+            iconColor: '#ff0055',
+            showCancelButton: true,
+            confirmButtonColor: '#ff0055',
+            cancelButtonColor: '#0099ff',
+            confirmButtonText: 'SUPPRIMER',
+            cancelButtonText: 'ANNULER',
+            customClass: {
+                popup: 'cyber-popup',
+                title: 'cyber-title',
+                confirmButton: 'cyber-confirm-btn',
+                cancelButton: 'cyber-cancel-btn'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/teams/' + teamId + '/delete';
+            }
+        });
     }
 </script>
 </body>
